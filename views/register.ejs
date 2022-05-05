@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+  </head>
+  <body class="login-register">
+    <%- include('partials/nav') %>
+    <div class="container">
+      <header class="b-gap">
+        <h1 class="green-accent">Register</h1>
+
+        <form action="" class="md-gap" id="register-form">
+          <div>
+            <label for="name">name</label>
+            <input type="fname" class="input" id="name" />
+          </div>
+
+          <div>
+            <label for="email">email</label>
+            <input type="email" class="input" id="email" />
+          </div>
+
+          <div>
+            <label for="password">password</label>
+            <input type="password" class="input" id="password" />
+          </div>
+
+          <button class="btn">Register</button>
+        </form>
+
+        <div class="account-options sm-gap">
+          <p>Have an account?</p>
+          <a href="login" class="green-accent">Login</a>
+        </div>
+      </header>
+    </div>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
