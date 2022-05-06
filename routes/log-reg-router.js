@@ -6,13 +6,23 @@ const connection = require("../database");
 const User = connection.models.User;
 // const logRegController = require("../controllers/log-reg-controller");
 
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/register",
-  })
-);
+router.post("/login", function (req, res, next) {
+  passport.authenticate("local", function (err, user, info) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.status(320).json({ redirectUrl: "/register" });
+    }
+    req.logIn(user, function (err) {
+      if (err) {
+        return next(err);
+      }
+      //If Successful
+      return res.status(320).json({ redirectUrl: "/" });
+    });
+  })(req, res, next);
+});
 
 router.post("/register", async (req, res) => {
   const existingUser = await User.findOne({ username: req.body.username });

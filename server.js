@@ -35,11 +35,17 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.use((req, res, next) => {
-//   console.log(req.session);
-//   console.log(req.user);
-//   next();
-// });
+app.use((req, res, next) => {
+  console.log(req.session);
+  console.log(req.user);
+  next();
+});
+
+app.get("/logout", (req, res, next) => {
+  req.logout();
+  res.redirect("/");
+  next();
+});
 
 app.use(logRegRoutes);
 app.use(pagesRoutes);

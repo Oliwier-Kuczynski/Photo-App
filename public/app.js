@@ -39,6 +39,14 @@ const login = async function (e) {
       password,
     }),
   });
+
+  const result = response.json();
+
+  const data = await result;
+
+  const { redirectUrl } = data;
+
+  window.location.href = redirectUrl;
 };
 
 if (registerForm) registerForm.addEventListener("submit", register);
