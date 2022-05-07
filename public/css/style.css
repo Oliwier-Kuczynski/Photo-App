@@ -1,0 +1,196 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap");
+
+/* Root */
+:root {
+  --primary-color: #4ab226;
+  --black: #000;
+  --gray: #3d3d3d;
+  --white: #fff;
+
+  --sm-gap: 0.5rem;
+  --md-gap: 1.5rem;
+  --b-gap: 2.5rem;
+  --xb-gap: 4rem;
+}
+
+/* Global */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  font-family: "Roboto", sans-serif;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--white);
+  text-decoration: none;
+}
+
+label {
+  display: block;
+  color: var(--gray);
+}
+
+.container {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 2rem;
+}
+
+/* Typography */
+h2 {
+  font-size: clamp(1rem, 5vw, 1.2rem);
+  font-weight: 500;
+}
+
+h3 {
+  font-weight: 500;
+}
+
+p {
+  color: var(--gray);
+}
+
+/* Utility Classes */
+.sb-c {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sm-gap {
+  gap: var(--sm-gap);
+}
+
+.md-gap {
+  gap: var(--md-gap);
+}
+
+.b-gap {
+  gap: var(--b-gap);
+}
+
+.xb-gap {
+  gap: var(--xb-gap);
+}
+
+.green-accent {
+  color: var(--primary-color);
+}
+
+.hide {
+  display: none;
+}
+
+/* Components */
+
+/* buttons */
+.btn {
+  padding: 0.75rem 2rem;
+  background-color: #4ab226;
+  border-radius: 0.4rem;
+  border: none;
+  color: var(--white);
+  cursor: pointer;
+}
+
+.btn:hover,
+:focus {
+  opacity: 0.8;
+}
+
+/* inputs */
+.input {
+  padding: 0.2rem 0.5rem;
+  min-height: 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.4rem;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15);
+}
+
+.textarea {
+  padding: 0.2rem 0.5rem;
+  font-size: 1rem;
+  border: none;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* other */
+.push {
+  min-height: 4rem;
+}
+
+/* Layouts */
+
+/* header */
+
+.main-nav {
+  min-height: 4rem;
+  padding-inline: clamp(2rem, 4vw, 4rem);
+  background-color: var(--primary-color);
+}
+
+.search-form {
+  min-height: 8rem;
+  margin-inline: auto;
+  padding-inline: clamp(2rem, 4vw, 4rem);
+  max-width: 55rem;
+}
+
+.search-form * {
+  height: 2.2rem;
+}
+
+.search-form form {
+  display: flex;
+  align-items: center;
+  flex: 0.85;
+}
+
+.search-form .input {
+  padding: 0 0.5rem;
+}
+
+.search-form button {
+  max-width: 0;
+  display: grid;
+  place-content: center;
+}
+
+.search-form button img {
+  min-width: 1.75rem;
+}
+
+.search-form input {
+  width: 100%;
+}
+
+/* Footer */
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 4rem;
+  padding: 1rem 0;
+  background-color: var(--primary-color);
+  color: var(--white);
+}

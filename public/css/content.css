@@ -1,0 +1,45 @@
+/* Content */
+.content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+}
+
+@media screen and (max-width: 780px) {
+  .content {
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  }
+}
+
+.content article {
+  display: grid;
+}
+
+.photo-display {
+  position: relative;
+  min-height: 14rem;
+  border-radius: 0.4rem;
+  background-image: url(../img/IMG_20200922_153646.jpg);
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.photo-display p {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  color: var(--white);
+  text-shadow: 0 0 2px var(--black);
+}
+
+.content .description {
+  display: grid;
+  padding: 0.8rem;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.15);
+  border-radius: 0.4rem;
+}
+
+.content .options {
+  display: flex;
+  justify-content: space-between;
+}

@@ -4,7 +4,7 @@ const MongoStore = require("connect-mongo");
 const passport = require("passport");
 const logRegRoutes = require("./routes/log-reg-router");
 const pagesRoutes = require("./routes/pages-router");
-require("./passport");
+require("./authentication/passport");
 require("dotenv").config();
 require("ejs");
 
@@ -18,7 +18,7 @@ app.use(express.json());
 
 app.use(
   session({
-    secret: process.env.SECRET,
+    secret: process.env.sessionSECRET,
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({
@@ -35,11 +35,11 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use((req, res, next) => {
-  console.log(req.session);
-  console.log(req.user);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(req.session);
+//   console.log(req.user);
+//   next();
+// });
 
 app.get("/logout", (req, res, next) => {
   req.logout();

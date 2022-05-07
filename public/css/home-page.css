@@ -1,0 +1,11 @@
+/* Typography */
+.photo-display p {
+  font-weight: 500;
+}
+
+/* Content */
+
+.btn-more {
+  display: block;
+  margin: 5rem auto;
+}
