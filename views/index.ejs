@@ -2,141 +2,64 @@
 <html lang="en">
   <head>
     <%- include('partials/head') %>
-    <link rel="stylesheet" href="css/home-page.css" />
-    <link rel="stylesheet" href="css/content.css" />
   </head>
   <body>
-    <!-- Header -->
-    <header>
-      <%- include('partials/nav') %> <%- include('partials/search') %>
-    </header>
+    <div class="container">
+      <!-- Navigation -->
+      <nav class="primary-nav ai-c">
+        <form class="primary-nav__search ai-c">
+          <button class="btn-gray" aria-label="Filter results">
+            <img src="img/filter-list.svg" alt="filter results icon" />
+          </button>
 
-    <!-- SECTION ITEMS TO BUY -->
-    <section class="container content xb-gap">
-      <!-- Each Item -->
-      <article class="md-gap">
-        <!-- Photo Cover -->
-        <div class="photo-display"><p>12/08/22</p></div>
-        <!-- Description -->
-        <div class="md-gap description">
-          <h2>House in the central park</h2>
-          <p>
-            Photo shows an amazing park that is near the bigest church in Europe
-            and was built in ...
-          </p>
-          <!-- Action Menu -->
-          <div class="options">
-            <p>Open</p>
-            <p>10$</p>
-            <p>Add to cart</p>
+          <div class="primary-nav__search-bar ai-c">
+            <button aria-label="Search button">
+              <img src="img/search-icon.svg" alt="search icon" />
+            </button>
+            <input type="text" />
           </div>
+        </form>
+        <ul class="primary-nav__menu spacer" data-nav-menu>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Login</a></li>
+          <li><a href="#">Register</a></li>
+        </ul>
+        <button class="btn-gray primary-nav__menu-btn" aria-label="Menu" data-nav-menu-btn>
+          <img src="img/hamburger-menu.svg" alt="hamburger menu icon" />
+        </button>
+      </nav>
+      <div class="menu-space" data-nav-menu-space></div>
+      <main>
+        <!-- Articles -->
+        <!-- prettier-ignore -->
+        <div class="articles-container spacer">
+          <article class="spacer">
+            <img src="img/IMG_20200922_153646.jpg" alt="article photo">
+            <h1>Central Park New York City</h1>
+            <p>is an urban park in New York City, between the Upper West and Upper East Sides of Manhattan. It is the fifth largest park in the city, covering 843 acres (341 ha) <span class="articles-container__highlight">Read more</span></p>
+            <div class="articles-container__article-info separetor"><p>10&#36</p><p>By Tom Greenwood</p><p>22/11/20</p></div>
+            <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
+          </article>
+
+          <article class="spacer">
+            <img src="img/IMG_20200922_153646.jpg" alt="article photo">
+            <h1>Central Park New York City</h1>
+            <p>is an urban park in New York City, between the Upper West and Upper East Sides of Manhattan. It is the fifth largest park in the city, covering 843 acres (341 ha) <span class="articles-container__highlight">Read more</span></p>
+            <div class="articles-container__article-info separetor"><p>10&#36</p><p>By Tom Greenwood</p><p>22/11/20</p></div>
+            <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
+          </article>
+
+          <article class="spacer">
+            <img src="img/IMG_20200922_153646.jpg" alt="article photo">
+            <h1>Central Park New York City</h1>
+            <p>is an urban park in New York City, between the Upper West and Upper East Sides of Manhattan. It is the fifth largest park in the city, covering 843 acres (341 ha) <span class="articles-container__highlight">Read more</span></p>
+            <div class="articles-container__article-info separetor"><p>10&#36</p><p>By Tom Greenwood</p><p>22/11/20</p></div>
+            <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
+          </article>
         </div>
-      </article>
-
-      <!-- Each Item -->
-      <article class="md-gap">
-        <!-- Photo Cover -->
-        <div class="photo-display"><p>12/08/22</p></div>
-        <!-- Description -->
-        <div class="md-gap description">
-          <h2>House in the central park</h2>
-          <p>
-            Photo shows an amazing park that is near the bigest church in Europe
-            and was built in ...
-          </p>
-          <!-- Action Menu -->
-          <div class="options">
-            <p>Open</p>
-            <p>10$</p>
-            <p>Add to cart</p>
-          </div>
-        </div>
-      </article>
-
-      <!-- Each Item -->
-      <article class="md-gap">
-        <!-- Photo Cover -->
-        <div class="photo-display"><p>12/08/22</p></div>
-        <!-- Description -->
-        <div class="md-gap description">
-          <h2>House in the central park</h2>
-          <p>
-            Photo shows an amazing park that is near the bigest church in Europe
-            and was built in ...
-          </p>
-          <!-- Action Menu -->
-          <div class="options">
-            <p>Open</p>
-            <p>10$</p>
-            <p>Add to cart</p>
-          </div>
-        </div>
-      </article>
-
-      <!-- Each Item -->
-      <article class="md-gap">
-        <!-- Photo Cover -->
-        <div class="photo-display"><p>12/08/22</p></div>
-        <!-- Description -->
-        <div class="md-gap description">
-          <h2>House in the central park</h2>
-          <p>
-            Photo shows an amazing park that is near the bigest church in Europe
-            and was built in ...
-          </p>
-          <!-- Action Menu -->
-          <div class="options">
-            <p>Open</p>
-            <p>10$</p>
-            <p>Add to cart</p>
-          </div>
-        </div>
-      </article>
-
-      <!-- Each Item -->
-      <article class="md-gap">
-        <!-- Photo Cover -->
-        <div class="photo-display"><p>12/08/22</p></div>
-        <!-- Description -->
-        <div class="md-gap description">
-          <h2>House in the central park</h2>
-          <p>
-            Photo shows an amazing park that is near the bigest church in Europe
-            and was built in ...
-          </p>
-          <!-- Action Menu -->
-          <div class="options">
-            <p>Open</p>
-            <p>10$</p>
-            <p>Add to cart</p>
-          </div>
-        </div>
-      </article>
-
-      <!-- Each Item -->
-      <article class="md-gap">
-        <!-- Photo Cover -->
-        <div class="photo-display"><p>12/08/22</p></div>
-        <!-- Description -->
-        <div class="md-gap description">
-          <h2>House in the central park</h2>
-          <p>
-            Photo shows an amazing park that is near the bigest church in Europe
-            and was built in ...
-          </p>
-          <!-- Action Menu -->
-          <div class="options">
-            <p>Open</p>
-            <p>10$</p>
-            <p>Add to cart</p>
-          </div>
-        </div>
-      </article>
-    </section>
-
-    <button class="btn btn-more">More</button>
-
-    <div class="push"></div>
-    <%- include('partials/footer') %>
+        <button class="btn-dark load-more-btn">More</button>
+      </main>
+    </div>
   </body>
 </html>

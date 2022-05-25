@@ -5,6 +5,7 @@ const loginForm = document.querySelector("#login-form");
 const returnBtn = document.querySelector("#return-btn");
 const uploadBtn = document.querySelector("#upload-btn");
 const uploadPopup = document.querySelector("#upload-popup");
+const menuBtn = document.querySelector("[data-nav-menu-btn]");
 
 const register = async function (e) {
   e.preventDefault();
@@ -58,7 +59,16 @@ const hideUpload = () => {
   uploadPopup.classList.toggle("hide");
 };
 
+const openMenu = () => {
+  const menu = document.querySelector("[data-nav-menu]");
+  const menuSpace = document.querySelector("[data-nav-menu-space]");
+
+  menu.classList.toggle("show");
+  menuSpace.classList.toggle("show");
+};
+
 if (registerForm) registerForm.addEventListener("submit", register);
 if (loginForm) loginForm.addEventListener("submit", login);
 if (returnBtn) returnBtn.addEventListener("click", hideUpload);
 if (uploadBtn) uploadBtn.addEventListener("click", hideUpload);
+menuBtn.addEventListener("click", openMenu);
