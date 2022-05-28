@@ -102,7 +102,11 @@ h2,
 .separetor {
   display: flex;
   flex-wrap: wrap;
-  column-gap: var(--spacer);
+  gap: var(--spacer);
+}
+
+.b-margin-top {
+  margin-top: 4.375rem;
 }
 
 .ai-c {
@@ -135,11 +139,17 @@ h2,
   border-radius: var(--br-200);
 }
 
+.btn-accent {
+  --bg: var(--accent-color-100);
+  padding: 0.65rem 1rem;
+  border-radius: var(--br-200);
+}
+
 .green-accent {
   color: var(--accent-color-100);
 }
 
-/* General Styling */
+/* Components */
 .load-more-btn {
   display: block;
   margin: 3.5rem auto;
@@ -167,6 +177,35 @@ h2,
 
 .checkout-btn__left-column {
   gap: var(--spacer);
+}
+
+.main-form {
+  --gap: 1.875rem;
+  margin-inline: auto;
+  max-width: 30rem;
+  padding: 2.5rem;
+  border-radius: var(--br-200);
+  background-color: var(--black);
+  color: var(--white);
+}
+
+.main-form input {
+  display: block;
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--br-100);
+  background-color: var(--white);
+}
+
+.main-form input[type="checkbox"] {
+  width: auto;
+}
+
+.main-form button {
+  display: block;
+  width: 100%;
+  max-width: 12rem;
+  margin-inline: auto;
 }
 
 /* Navigation */

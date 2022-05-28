@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+  </head>
+  <body>
+    <div class="container">
+      <%- include('partials/navigation')%>
+      <form class="main-form">
+        <div class="ver-spacer">
+          <div>
+            <label for="name">Name</label>
+            <input type="fname" id="name" />
+          </div>
+
+          <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" />
+          </div>
+
+          <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" />
+          </div>
+
+          <div class="separetor">
+            <p>
+              I agree to the
+              <a href="#" class="green-accent">terms of service</a>
+            </p>
+            <input type="checkbox" value="Agreed" />
+          </div>
+        </div>
+
+        <button class="btn-accent b-margin-top">Register</button>
+      </form>
+    </div>
+  </body>
+</html>
