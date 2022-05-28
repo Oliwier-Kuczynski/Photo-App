@@ -6,6 +6,7 @@
   --primary-color-300: #c4c4c4;
   --primary-color-600: #767676;
   --primary-color-800: #474747;
+  --accent-color-100: #3c9c1b;
   --black: #000;
   --white: #fff;
 
@@ -34,6 +35,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  position: relative;
 }
 
 body {
@@ -90,7 +95,7 @@ h2,
   margin: 0 auto;
 }
 
-.spacer > * + * {
+.ver-spacer > * + * {
   margin-top: var(--gap, var(--spacer));
 }
 
@@ -109,6 +114,7 @@ h2,
   background-color: var(--bg, var(--primary-color-800));
   color: var(--fg, var(--white));
   font-weight: var(--fw-500);
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -125,8 +131,42 @@ h2,
 
 .btn-dark {
   --bg: var(--black);
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--br-100);
+  padding: 0.65rem 1rem;
+  border-radius: var(--br-200);
+}
+
+.green-accent {
+  color: var(--accent-color-100);
+}
+
+/* General Styling */
+.load-more-btn {
+  display: block;
+  margin: 3.5rem auto;
+  padding: 0.4rem 1.5rem;
+}
+
+.checkout-btn {
+  position: fixed;
+  bottom: 1rem;
+  right: 50%;
+  transform: translateX(50%);
+  width: 90%;
+  max-width: max-content;
+  display: flex;
+  justify-content: space-between;
+  gap: 4rem;
+}
+
+@media screen and (min-width: 40rem) {
+  .checkout-btn {
+    right: 1rem;
+    transform: translateX(0);
+  }
+}
+
+.checkout-btn__left-column {
+  gap: var(--spacer);
 }
 
 /* Navigation */
@@ -175,6 +215,8 @@ h2,
   top: 100%;
   left: 50%;
   display: none;
+  flex-direction: column;
+  gap: var(--spacer);
   width: 100%;
   max-width: 20rem;
   padding: 1rem;
@@ -190,7 +232,7 @@ h2,
   .primary-nav__menu {
     position: static;
     display: flex;
-    gap: var(--spacer);
+    flex-direction: row;
     width: max-content;
     max-width: none;
     padding: 0;
@@ -200,14 +242,10 @@ h2,
     border-radius: none;
     text-align: left;
   }
-
-  .primary-nav__menu > * {
-    margin-top: 0;
-  }
 }
 
 .primary-nav__menu.show {
-  display: block;
+  display: flex;
 }
 
 .primary-nav__menu a {
@@ -243,21 +281,13 @@ h2,
 /* Articles */
 .articles-container {
   display: grid;
+  gap: calc(var(--spacer) * 2);
   grid-template-columns: 1fr;
-}
-
-.articles-container > * + * {
-  margin-top: calc(var(--spacer) * 2.5);
 }
 
 @media screen and (min-width: 40rem) {
   .articles-container {
     grid-template-columns: repeat(3, 1fr);
-    gap: calc(var(--spacer) * 2);
-  }
-
-  .articles-container > * + * {
-    margin-top: 0;
   }
 }
 
@@ -278,10 +308,4 @@ h2,
 
 .articles-container__button img {
   width: 1.25rem;
-}
-
-.load-more-btn {
-  display: block;
-  margin: 3.5rem auto;
-  padding: 0.4rem 1.5rem;
 }
