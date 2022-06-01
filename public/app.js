@@ -1,11 +1,15 @@
 "use strict";
 
+import * as colcade from "./node_modules/colcade/colcade.js";
+
 const registerForm = document.querySelector("#register-form");
 const loginForm = document.querySelector("#login-form");
 const returnBtn = document.querySelector("#return-btn");
 const uploadBtn = document.querySelector("#upload-btn");
 const uploadPopup = document.querySelector("#upload-popup");
 const menuBtn = document.querySelector("[data-nav-menu-btn]");
+
+// Sending requsets to the backend
 
 const register = async function (e) {
   e.preventDefault();
@@ -55,6 +59,8 @@ const login = async function (e) {
   window.location.href = redirectUrl;
 };
 
+// Layout related
+
 const hideUpload = () => {
   uploadPopup.classList.toggle("hide");
 };
@@ -67,6 +73,13 @@ const openMenu = () => {
   menuSpace.classList.toggle("show");
 };
 
+// Colcade
+const colc = new Colcade(".grid", {
+  columns: ".grid-col",
+  items: ".grid-item",
+});
+
+// Eventlistners
 if (registerForm) registerForm.addEventListener("submit", register);
 if (loginForm) loginForm.addEventListener("submit", login);
 if (returnBtn) returnBtn.addEventListener("click", hideUpload);
