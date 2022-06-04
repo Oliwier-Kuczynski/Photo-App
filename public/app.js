@@ -79,6 +79,11 @@ const colc = new Colcade(".grid", {
   items: ".grid-item",
 });
 
+const colcAdditional = new Colcade(".grid-additional", {
+  columns: ".grid-col-additional",
+  items: ".grid-item-additional",
+});
+
 // Eventlistners
 if (registerForm) registerForm.addEventListener("submit", register);
 if (loginForm) loginForm.addEventListener("submit", login);

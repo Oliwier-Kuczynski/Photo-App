@@ -46,6 +46,7 @@ body {
   font-size: var(--fs-200);
   font-weight: var(--fw-400);
   line-height: 1.8;
+  margin-bottom: 7rem;
 }
 
 img {
@@ -158,16 +159,20 @@ h2,
   color: var(--accent-color-100);
 }
 
+.gray-accent {
+  color: var(--primary-color-600);
+}
+
 .text-c {
   text-align: center;
 }
 
 /* Components */
-.load-more-btn {
+/* .load-more-btn {
   display: block;
   margin: 3.5rem auto;
   padding: 0.4rem 1.5rem;
-}
+} */
 
 .checkout-btn {
   position: fixed;
@@ -379,4 +384,9 @@ h2,
 
 .articles-container__button img {
   width: 1.25rem;
+}
+
+/* Profile Page */
+.profile-section-indicetor {
+  margin-block: calc(var(--spacer) * 2.5);
 }

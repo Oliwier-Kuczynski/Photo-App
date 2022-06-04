@@ -6,6 +6,10 @@ const aboutGet = (req, res) => {
   res.render("about.ejs");
 };
 
+const profileGet = (req, res) => {
+  res.render("profile.ejs");
+};
+
 const loginGet = (req, res) => {
   res.render("login.ejs");
 };
@@ -18,4 +22,11 @@ const protectedGet = (req, res) => {
   res.render("account.ejs");
 };
 
-module.exports = { homePageGet, aboutGet, loginGet, registerGet, protectedGet };
+module.exports = {
+  homePageGet,
+  aboutGet,
+  profileGet,
+  loginGet,
+  registerGet,
+  protectedGet,
+};
