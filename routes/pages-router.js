@@ -5,6 +5,7 @@ const pagesController = require("../controllers/pagesController");
 
 router.get("/", pagesController.homePageGet);
 
+router.get("/about", pagesController.aboutGet);
 //////////////////////////
 //Authenticate is missing
 //////////////////////////

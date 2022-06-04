@@ -63,6 +63,10 @@ button {
   font-weight: inherit;
 }
 
+button {
+  cursor: pointer;
+}
+
 ul[class],
 ol[class] {
   list-style: none;
@@ -75,17 +79,18 @@ h2,
 .h2,
 h3,
 .h3 {
+  font-family: "Roboto", sans-serif;
   line-height: 1;
 }
 
 h1,
 .h1 {
-  font-size: var(--fs-300);
+  font-size: var(--fs-400);
 }
 
 h2,
 .h2 {
-  font-size: var(--fs-400);
+  font-size: var(--fs-300);
 }
 
 /* Utility Classes */
@@ -102,11 +107,16 @@ h2,
 .separetor {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacer);
+  column-gap: var(--spacer);
 }
 
 .b-margin-top {
   margin-top: 4.375rem;
+}
+
+.limiter {
+  margin-inline: auto;
+  max-width: 30rem;
 }
 
 .ai-c {
@@ -119,7 +129,6 @@ h2,
   color: var(--fg, var(--white));
   font-weight: var(--fw-500);
   text-decoration: none;
-  cursor: pointer;
 }
 
 [class*="btn-"]:hover,
@@ -147,6 +156,10 @@ h2,
 
 .green-accent {
   color: var(--accent-color-100);
+}
+
+.text-c {
+  text-align: center;
 }
 
 /* Components */
