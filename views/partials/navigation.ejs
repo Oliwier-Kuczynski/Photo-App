@@ -1,6 +1,6 @@
 <nav class="primary-nav ai-c">
   <form class="primary-nav__search ai-c">
-    <button class="btn-gray" aria-label="Filter results">
+    <button class="btn-gray" aria-label="Filter results" data-filter-btn="">
       <img src="img/filter-list.svg" alt="filter results icon" />
     </button>
 
@@ -11,7 +11,7 @@
       <input type="text" />
     </div>
   </form>
-  <ul class="primary-nav__menu" data-nav-menu>
+  <ul class="primary-nav__menu menu" data-nav-menu>
     <li><a href="/">Home</a></li>
     <li><a href="about">About</a></li>
     <li><a href="login">Login</a></li>
@@ -25,4 +25,29 @@
     <img src="img/hamburger-menu.svg" alt="hamburger menu icon" />
   </button>
 </nav>
+
+<ul class="filter-menu menu" data-filter-menu="">
+  <li><button>Popularity</button></li>
+  <li>
+    <button class="ai-c">
+      Price <img src="/img/arrow_upward.svg" alt="" />
+    </button>
+  </li>
+  <li>
+    <button class="ai-c">
+      Price <img src="/img/arrow_downward.svg" alt="" />
+    </button>
+  </li>
+  <li>
+    <button class="ai-c">
+      Added <img src="/img/arrow_upward.svg" alt="" />
+    </button>
+  </li>
+  <li>
+    <button class="ai-c">
+      Added <img src="/img/arrow_downward.svg" alt="" />
+    </button>
+  </li>
+</ul>
+
 <div class="menu-space" data-nav-menu-space></div>
