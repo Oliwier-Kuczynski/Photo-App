@@ -413,3 +413,10 @@ h2,
 .profile-section-indicetor {
   margin-block: calc(var(--spacer) * 2.5);
 }
+
+.upload-btn {
+  display: block;
+  width: 100%;
+  max-width: 18rem;
+  margin-inline: auto;
+}
