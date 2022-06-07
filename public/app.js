@@ -2,11 +2,10 @@
 
 import * as colcade from "./node_modules/colcade/colcade.js";
 
-const registerForm = document.querySelector("#register-form");
-const loginForm = document.querySelector("#login-form");
-const returnBtn = document.querySelector("#return-btn");
+const registerForm = document.querySelector("[data-register-form]");
+const loginForm = document.querySelector("[data-login-form]");
 const uploadBtn = document.querySelector("#upload-btn");
-const uploadPopup = document.querySelector("#upload-popup");
+// const uploadPopup = document.querySelector("#upload-popup");
 const menuBtn = document.querySelector("[data-nav-menu-btn]");
 const filterBtn = document.querySelector("[data-filter-btn]");
 
@@ -14,8 +13,10 @@ const filterBtn = document.querySelector("[data-filter-btn]");
 
 const register = async function (e) {
   e.preventDefault();
+  const name = registerForm.querySelector("#name").value;
   const username = registerForm.querySelector("#email").value;
   const password = registerForm.querySelector("#password").value;
+  const agreed = registerForm.querySelector("#agreed").checked;
 
   const response = await fetch("/register", {
     method: "POST",
@@ -25,12 +26,18 @@ const register = async function (e) {
     body: JSON.stringify({
       username,
       password,
+      name,
+      agreed,
     }),
   });
 
   const result = response.json();
 
   const data = await result;
+
+  if (response.ok) {
+    window.location.href = "/";
+  }
 
   console.log(data);
 };
@@ -62,10 +69,6 @@ const login = async function (e) {
 
 // Layout related
 
-const hideUpload = () => {
-  uploadPopup.classList.toggle("hide");
-};
-
 const openMenu = () => {
   const menu = document.querySelector("[data-nav-menu]");
   const menuSpace = document.querySelector("[data-nav-menu-space]");
@@ -95,10 +98,12 @@ const openFilter = (e) => {
 };
 
 // Colcade
-new Colcade(".grid", {
-  columns: ".grid-col",
-  items: ".grid-item",
-});
+if (document.querySelector(".grid")) {
+  new Colcade(".grid", {
+    columns: ".grid-col",
+    items: ".grid-item",
+  });
+}
 
 if (document.querySelector(".grid-additional")) {
   new Colcade(".grid-additional", {
@@ -110,7 +115,5 @@ if (document.querySelector(".grid-additional")) {
 // Eventlistners
 if (registerForm) registerForm.addEventListener("submit", register);
 if (loginForm) loginForm.addEventListener("submit", login);
-if (returnBtn) returnBtn.addEventListener("click", hideUpload);
-if (uploadBtn) uploadBtn.addEventListener("click", hideUpload);
 menuBtn.addEventListener("click", openMenu);
 filterBtn.addEventListener("click", openFilter);

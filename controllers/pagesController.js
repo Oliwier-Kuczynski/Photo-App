@@ -19,7 +19,7 @@ const registerGet = (req, res) => {
 };
 
 const protectedGet = (req, res) => {
-  res.render("account.ejs");
+  res.render("profile.ejs");
 };
 
 module.exports = {

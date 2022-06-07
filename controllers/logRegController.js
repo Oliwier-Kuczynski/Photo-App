@@ -1,6 +1,6 @@
 const passport = require("passport");
 const genPassword = require("../authentication/passwordUtils").genPassword;
-const connection = require("../database");
+const connection = require("../models/user");
 const User = connection.models.User;
 
 const loginPost = (req, res, next) => {
@@ -9,7 +9,7 @@ const loginPost = (req, res, next) => {
       return next(err);
     }
     if (!user) {
-      return res.status(320).json({ redirectUrl: "/register" });
+      return res.status(320).json({ redirectUrl: "/login" });
     }
     req.logIn(user, function (err) {
       if (err) {
@@ -23,10 +23,20 @@ const loginPost = (req, res, next) => {
 
 const registerPost = async (req, res, next) => {
   const existingUser = await User.findOne({ username: req.body.username });
+
   if (existingUser)
     return res
       .status(409)
       .json({ message: "User already exists in our database" });
+
+  const agreed = req.body.agreed;
+  const name = req.body.name;
+
+  if (!agreed) {
+    return res
+      .status(451)
+      .json({ message: "You have to agree to our terms of service" });
+  }
 
   const { salt, hash } = genPassword(req.body.password);
 
@@ -34,6 +44,8 @@ const registerPost = async (req, res, next) => {
     username: req.body.username,
     salt,
     hash,
+    name,
+    agreed,
   });
 
   newUser.save();
