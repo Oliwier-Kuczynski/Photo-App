@@ -14,6 +14,6 @@ router.get("/login", pagesController.loginGet);
 
 router.get("/register", pagesController.registerGet);
 
-router.get("/profile", isAuth, pagesController.protectedGet);
+router.get("/profile", isAuth, pagesController.profileGet);
 
 module.exports = router;

@@ -1,25 +1,29 @@
 const homePageGet = (req, res) => {
-  res.render("index.ejs");
+  if (req.isAuthenticated())
+    return res.render("index.ejs", { authenticated: true });
+  res.render("index.ejs", { authenticated: false });
 };
 
 const aboutGet = (req, res) => {
-  res.render("about.ejs");
+  if (req.isAuthenticated())
+    return res.render("about.ejs", { authenticated: true });
+  res.render("about.ejs", { authenticated: false });
 };
 
 const profileGet = (req, res) => {
-  res.render("profile.ejs");
+  res.render("profile.ejs", { authenticated: true });
 };
 
 const loginGet = (req, res) => {
-  res.render("login.ejs");
+  if (req.isAuthenticated())
+    return res.render("login.ejs", { authenticated: true });
+  res.render("login.ejs", { authenticated: false });
 };
 
 const registerGet = (req, res) => {
-  res.render("register.ejs");
-};
-
-const protectedGet = (req, res) => {
-  res.render("profile.ejs");
+  if (req.isAuthenticated())
+    return res.render("register.ejs", { authenticated: true });
+  res.render("register.ejs", { authenticated: false });
 };
 
 module.exports = {
@@ -28,5 +32,4 @@ module.exports = {
   profileGet,
   loginGet,
   registerGet,
-  protectedGet,
 };
