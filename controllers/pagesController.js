@@ -26,10 +26,17 @@ const registerGet = (req, res) => {
   res.render("register.ejs", { authenticated: false });
 };
 
+const uploadGet = (req, res) => {
+  if (req.isAuthenticated())
+    return res.render("upload.ejs", { authenticated: true });
+  res.render("upload.ejs", { authenticated: false });
+};
+
 module.exports = {
   homePageGet,
   aboutGet,
   profileGet,
   loginGet,
   registerGet,
+  uploadGet,
 };

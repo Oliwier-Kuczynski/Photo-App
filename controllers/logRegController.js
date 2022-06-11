@@ -31,6 +31,7 @@ const registerPost = async (req, res, next) => {
 
   const agreed = req.body.agreed;
   const name = req.body.name;
+  const username = req.body.username;
 
   if (!agreed) {
     return res
@@ -41,7 +42,7 @@ const registerPost = async (req, res, next) => {
   const { salt, hash } = genPassword(req.body.password);
 
   const newUser = new User({
-    username: req.body.username,
+    username,
     salt,
     hash,
     name,

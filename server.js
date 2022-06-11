@@ -4,6 +4,7 @@ const MongoStore = require("connect-mongo");
 const passport = require("passport");
 const logRegRoutes = require("./routes/log-reg-router");
 const pagesRoutes = require("./routes/pages-router");
+const productsRoutes = require("./routes/products-router");
 require("./authentication/passport");
 require("dotenv").config();
 require("ejs");
@@ -49,6 +50,7 @@ app.get("/logout", (req, res, next) => {
 
 app.use(logRegRoutes);
 app.use(pagesRoutes);
+app.use(productsRoutes);
 
 app.listen(port, (err) => {
   if (err) console.error("App is not listening");

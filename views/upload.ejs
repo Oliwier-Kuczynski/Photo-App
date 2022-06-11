@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+  </head>
+  <body>
+    <div class="container">
+      <%- include('partials/navigation')%>
+      <form class="main-form" data-upload-form="" enctype="multipart/form-data">
+        <div class="ver-spacer">
+          <div>
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" />
+          </div>
+
+          <div>
+            <label for="Description">Description</label>
+            <input type="text" id="description" name="description" />
+          </div>
+
+          <div>
+            <label for="price">Price</label>
+            <input type="text" id="price" name="price" />
+          </div>
+
+          <input type="file" id="image" name="image" />
+        </div>
+
+        <button class="btn-accent b-margin-top" type="submit">Upload</button>
+      </form>
+      <!-- prettier-ignore -->
+      <a href="#" class="btn-dark checkout-btn ai-c"><span>Checkout</span> <span class="checkout-btn__left-column ai-c"><span>3<span class="green-accent">x</span></span> <span>Total: <span class="green-accent">45$</span></span></span></a>
+    </div>
+  </body>
+</html>

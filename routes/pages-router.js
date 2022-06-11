@@ -7,13 +7,12 @@ router.get("/", pagesController.homePageGet);
 
 router.get("/about", pagesController.aboutGet);
 
-//////////////////////////
-//Authenticate is missing
-//////////////////////////
 router.get("/login", pagesController.loginGet);
 
 router.get("/register", pagesController.registerGet);
 
 router.get("/profile", isAuth, pagesController.profileGet);
+
+router.get("/upload", pagesController.uploadGet);
 
 module.exports = router;
