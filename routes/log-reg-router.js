@@ -6,4 +6,6 @@ router.post("/login", logRegController.loginPost);
 
 router.post("/register", logRegController.registerPost);
 
+router.get("/logout", logRegController.logoutGet);
+
 module.exports = router;

@@ -94,6 +94,24 @@ const upload = async function (e) {
 };
 
 // Layout related
+const showMessage = () => {
+  const body = document.body;
+  const htmlString = `
+  <div class="pop-up h2 text-c" data-popup>
+    <p>Success</p>
+  </div>
+  `;
+
+  body.insertAdjacentHTML("afterbegin", htmlString);
+
+  const popup = document.querySelector("[data-popup]");
+
+  setTimeout(() => {
+    popup.remove();
+  }, 4000);
+};
+
+showMessage();
 
 const openMenu = () => {
   const menu = document.querySelector("[data-nav-menu]");

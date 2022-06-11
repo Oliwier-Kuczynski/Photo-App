@@ -42,12 +42,6 @@ app.use(passport.session());
 //   next();
 // });
 
-app.get("/logout", (req, res, next) => {
-  req.logout();
-  res.redirect("/");
-  next();
-});
-
 app.use(logRegRoutes);
 app.use(pagesRoutes);
 app.use(productsRoutes);

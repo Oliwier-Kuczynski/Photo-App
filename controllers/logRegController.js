@@ -54,4 +54,9 @@ const registerPost = async (req, res, next) => {
   res.status(201).json({ message: "All good" });
 };
 
-module.exports = { loginPost, registerPost };
+const logoutGet = (req, res) => {
+  req.logout();
+  res.redirect("/");
+};
+
+module.exports = { loginPost, registerPost, logoutGet };

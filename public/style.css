@@ -244,6 +244,23 @@ h2,
   text-align: center;
 }
 
+.pop-up {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  padding: 1rem 2.5rem;
+  z-index: 1000;
+  background-color: var(--white);
+  font-weight: var(--fw-500);
+  border-radius: var(--br-100);
+  box-shadow: var(--shadow);
+  animation: bounce 4s forwards;
+}
+
 /* Navigation */
 .primary-nav {
   position: relative;
@@ -419,4 +436,30 @@ h2,
   width: 100%;
   max-width: 18rem;
   margin-inline: auto;
+}
+
+/* Animations */
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  10%,
+  20%,
+  30%,
+  40%,
+  50%,
+  60%,
+  70%,
+  80%,
+  90% {
+    transform: translateY(2rem);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-10rem);
+    opacity: 0;
+  }
 }
