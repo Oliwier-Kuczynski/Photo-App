@@ -8,6 +8,7 @@ const uploadForm = document.querySelector("[data-upload-form]");
 const menuBtn = document.querySelector("[data-nav-menu-btn]");
 const filterBtn = document.querySelector("[data-filter-btn]");
 const logoutBtn = document.querySelector("[data-logout-btn]");
+const closeAccountBtn = document.querySelector("[data-close-account-btn]");
 
 // Layout related
 const showMessage = (status, message, redirectUrl) => {
@@ -156,6 +157,37 @@ const logout = async function (e) {
   showMessage(status, message, redirectUrl);
 };
 
+const showConfirmation = function () {
+  const confirmationPopup = document.querySelector(
+    "[data-confiramtion-pop-up]"
+  );
+
+  const deleteAccountFetch = async () => {
+    const response = await fetch("close-account", {
+      method: "POST",
+    });
+
+    const data = await response.json();
+
+    const { status, message, redirectUrl } = data;
+
+    showMessage(status, message, redirectUrl);
+
+    confirmationPopup.classList.remove("show");
+  };
+
+  confirmationPopup.classList.add("show");
+
+  confirmationPopup.addEventListener("click", (e) => {
+    const target = e.target;
+
+    if (target.dataset.option === "yes") deleteAccountFetch();
+
+    if (target.dataset.option === "no")
+      confirmationPopup.classList.remove("show");
+  });
+};
+
 // Colcade
 if (document.querySelector(".grid")) {
   new Colcade(".grid", {
@@ -176,5 +208,7 @@ if (registerForm) registerForm.addEventListener("submit", register);
 if (loginForm) loginForm.addEventListener("submit", login);
 if (uploadForm) uploadForm.addEventListener("submit", upload);
 if (logoutBtn) logoutBtn.addEventListener("click", logout);
+if (closeAccountBtn)
+  closeAccountBtn.addEventListener("click", showConfirmation);
 menuBtn.addEventListener("click", openMenu);
 filterBtn.addEventListener("click", openFilter);

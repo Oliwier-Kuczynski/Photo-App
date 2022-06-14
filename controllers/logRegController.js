@@ -10,7 +10,6 @@ const loginPost = (req, res, next) => {
     }
     if (!user) {
       return res.status(320).json({
-        redirectUrl: "/login",
         status: "error",
         message: "Invalid credentials",
       });
@@ -43,7 +42,7 @@ const registerPost = async (req, res, next) => {
 
     if (!agreed) {
       return res.status(451).json({
-        staus: "error",
+        status: "error",
         message: "You have to agree to our terms of service",
       });
     }
@@ -64,9 +63,7 @@ const registerPost = async (req, res, next) => {
       .status(201)
       .json({ redirectUrl: "/", status: "ok", message: "New user created" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ status: "error", message: `Something went wrong ${err}` });
+    res.status(500).json({ status: "error", message: `Something went wrong` });
   }
 };
 
@@ -78,4 +75,29 @@ const logoutGet = (req, res) => {
     .json({ status: "ok", message: "Logged out", redirectUrl: "/" });
 };
 
-module.exports = { loginPost, registerPost, logoutGet };
+const closeAccountPost = async (req, res) => {
+  try {
+    const username = req.user.username;
+    await User.deleteOne({ username: username });
+
+    req.logout();
+    res
+      .status(200)
+      .json({ status: "ok", message: "Account deleted", redirectUrl: "/" });
+  } catch (err) {
+    res.status(500).json({
+      status: "error",
+      message: "Something went wrong",
+    });
+  }
+};
+
+const changePasswordPost = (req, res) => {};
+
+module.exports = {
+  loginPost,
+  registerPost,
+  logoutGet,
+  closeAccountPost,
+  changePasswordPost,
+};
