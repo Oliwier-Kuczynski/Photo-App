@@ -9,54 +9,73 @@ const loginPost = (req, res, next) => {
       return next(err);
     }
     if (!user) {
-      return res.status(320).json({ redirectUrl: "/login" });
+      return res.status(320).json({
+        redirectUrl: "/login",
+        status: "error",
+        message: "Invalid credentials",
+      });
     }
     req.logIn(user, function (err) {
       if (err) {
         return next(err);
       }
       //If Successful
-      return res.status(320).json({ redirectUrl: "/" });
+      return res
+        .status(320)
+        .json({ redirectUrl: "/", status: "ok", message: "Logged in" });
     });
   })(req, res, next);
 };
 
 const registerPost = async (req, res, next) => {
-  const existingUser = await User.findOne({ username: req.body.username });
+  try {
+    const existingUser = await User.findOne({ username: req.body.username });
 
-  if (existingUser)
-    return res
-      .status(409)
-      .json({ message: "User already exists in our database" });
+    if (existingUser)
+      return res.status(409).json({
+        status: "error",
+        message: "User already exists in our database",
+      });
 
-  const agreed = req.body.agreed;
-  const name = req.body.name;
-  const username = req.body.username;
+    const agreed = req.body.agreed;
+    const name = req.body.name;
+    const username = req.body.username;
 
-  if (!agreed) {
-    return res
-      .status(451)
-      .json({ message: "You have to agree to our terms of service" });
+    if (!agreed) {
+      return res.status(451).json({
+        staus: "error",
+        message: "You have to agree to our terms of service",
+      });
+    }
+
+    const { salt, hash } = genPassword(req.body.password);
+
+    const newUser = new User({
+      username,
+      salt,
+      hash,
+      name,
+      agreed,
+    });
+
+    newUser.save();
+
+    res
+      .status(201)
+      .json({ redirectUrl: "/", status: "ok", message: "New user created" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ status: "error", message: `Something went wrong ${err}` });
   }
-
-  const { salt, hash } = genPassword(req.body.password);
-
-  const newUser = new User({
-    username,
-    salt,
-    hash,
-    name,
-    agreed,
-  });
-
-  newUser.save();
-
-  res.status(201).json({ message: "All good" });
 };
 
 const logoutGet = (req, res) => {
   req.logout();
-  res.redirect("/");
+
+  res
+    .status(200)
+    .json({ status: "ok", message: "Logged out", redirectUrl: "/" });
 };
 
 module.exports = { loginPost, registerPost, logoutGet };

@@ -5,9 +5,16 @@ const UserSchema = new mongoose.Schema(
   {
     username: {
       type: String,
+      required: true,
     },
-    hash: String,
-    salt: String,
+    hash: {
+      type: String,
+      required: true,
+    },
+    salt: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

@@ -5,113 +5,36 @@ import * as colcade from "./node_modules/colcade/colcade.js";
 const registerForm = document.querySelector("[data-register-form]");
 const loginForm = document.querySelector("[data-login-form]");
 const uploadForm = document.querySelector("[data-upload-form]");
-// const uploadPopup = document.querySelector("#upload-popup");
 const menuBtn = document.querySelector("[data-nav-menu-btn]");
 const filterBtn = document.querySelector("[data-filter-btn]");
-
-// Sending requsets to the backend
-
-const register = async function (e) {
-  e.preventDefault();
-  const name = registerForm.querySelector("#name").value;
-  const username = registerForm.querySelector("#email").value;
-  const password = registerForm.querySelector("#password").value;
-  const agreed = registerForm.querySelector("#agreed").checked;
-
-  const response = await fetch("/register", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      username,
-      password,
-      name,
-      agreed,
-    }),
-  });
-
-  const result = response.json();
-
-  const data = await result;
-
-  if (response.ok) {
-    window.location.href = "/";
-  }
-
-  console.log(data);
-};
-
-const login = async function (e) {
-  e.preventDefault();
-  const username = loginForm.querySelector("#email").value;
-  const password = loginForm.querySelector("#password").value;
-
-  const response = await fetch("/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      username,
-      password,
-    }),
-  });
-
-  const result = response.json();
-
-  const data = await result;
-
-  const { redirectUrl } = data;
-
-  window.location.href = redirectUrl;
-};
-
-const upload = async function (e) {
-  e.preventDefault();
-  const title = uploadForm.querySelector("#title").value;
-  const description = uploadForm.querySelector("#description").value;
-  const price = uploadForm.querySelector("#price").value;
-  const image = uploadForm.querySelector("#image").files[0];
-
-  const formData = new FormData();
-
-  formData.append("title", title);
-  formData.append("description", description);
-  formData.append("price", price);
-  formData.append("image", image);
-
-  const response = await fetch("/upload", {
-    method: "POST",
-    body: formData,
-  });
-
-  const result = response.json();
-
-  const data = await result;
-
-  console.log(response);
-};
+const logoutBtn = document.querySelector("[data-logout-btn]");
 
 // Layout related
-const showMessage = () => {
+const showMessage = (status, message, redirectUrl) => {
   const body = document.body;
   const htmlString = `
   <div class="pop-up h2 text-c" data-popup>
-    <p>Success</p>
+    <p>${message}</p>
   </div>
   `;
 
   body.insertAdjacentHTML("afterbegin", htmlString);
 
+  if (status === "ok") {
+    document.documentElement.style.setProperty("--status-indicator", "#3c9c1b");
+  }
+
+  if (status !== "ok") {
+    document.documentElement.style.setProperty("--status-indicator", "#b30707");
+  }
+
   const popup = document.querySelector("[data-popup]");
 
   setTimeout(() => {
     popup.remove();
+    if (redirectUrl) window.location.href = redirectUrl;
   }, 4000);
 };
-
-showMessage();
 
 const openMenu = () => {
   const menu = document.querySelector("[data-nav-menu]");
@@ -141,6 +64,98 @@ const openFilter = (e) => {
   filterMenu.classList.toggle("show");
 };
 
+// Sending requsets to the backend
+
+const register = async function (e) {
+  e.preventDefault();
+  const name = registerForm.querySelector("#name").value;
+  const username = registerForm.querySelector("#email").value;
+  const password = registerForm.querySelector("#password").value;
+  const agreed = registerForm.querySelector("#agreed").checked;
+
+  const response = await fetch("/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username,
+      password,
+      name,
+      agreed,
+    }),
+  });
+
+  const data = await response.json();
+
+  const { status, message, redirectUrl } = data;
+
+  showMessage(status, message, redirectUrl);
+};
+
+const login = async function (e) {
+  e.preventDefault();
+  const username = loginForm.querySelector("#email").value;
+  const password = loginForm.querySelector("#password").value;
+
+  const response = await fetch("/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username,
+      password,
+    }),
+  });
+
+  const data = await response.json();
+
+  const { status, message, redirectUrl } = data;
+
+  showMessage(status, message, redirectUrl);
+};
+
+const upload = async function (e) {
+  e.preventDefault();
+  const title = uploadForm.querySelector("#title").value;
+  const description = uploadForm.querySelector("#description").value;
+  const price = uploadForm.querySelector("#price").value;
+  const image = uploadForm.querySelector("#image").files[0];
+
+  const formData = new FormData();
+
+  formData.append("title", title);
+  formData.append("description", description);
+  formData.append("price", price);
+  formData.append("image", image);
+
+  const response = await fetch("/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  const { status, message } = data;
+
+  showMessage(status, message);
+};
+
+const logout = async function (e) {
+  e.preventDefault();
+
+  const response = await fetch("/logout", {
+    method: "GET",
+  });
+
+  const data = await response.json();
+
+  const { status, message, redirectUrl } = data;
+
+  showMessage(status, message, redirectUrl);
+};
+
 // Colcade
 if (document.querySelector(".grid")) {
   new Colcade(".grid", {
@@ -160,5 +175,6 @@ if (document.querySelector(".grid-additional")) {
 if (registerForm) registerForm.addEventListener("submit", register);
 if (loginForm) loginForm.addEventListener("submit", login);
 if (uploadForm) uploadForm.addEventListener("submit", upload);
+if (logoutBtn) logoutBtn.addEventListener("click", logout);
 menuBtn.addEventListener("click", openMenu);
 filterBtn.addEventListener("click", openFilter);
