@@ -4,24 +4,26 @@ const connection = require("../models/user");
 const validatePassword = require("./passwordUtils").validatePassword;
 const User = connection.models.User;
 
-const verifyCallback = (username, password, done) => {
-  User.findOne({ username: username })
-    .then((user) => {
-      if (!user) {
-        return done(null, false);
-      }
+const verifyCallback = async (username, password, done) => {
+  try {
+    const user = await User.findOne({ username: username });
 
-      const isValid = validatePassword(password, user.hash, user.salt);
+    if (!user) {
+      return done(null, false);
+    }
 
-      if (isValid) {
-        return done(null, user);
-      }
+    const isValid = validatePassword(password, user.hash, user.salt);
 
-      if (!isValid) {
-        return done(null, false);
-      }
-    })
-    .catch((err) => done(err));
+    if (isValid) {
+      return done(null, user);
+    }
+
+    if (!isValid) {
+      return done(null, false);
+    }
+  } catch (err) {
+    done(err);
+  }
 };
 
 const strategy = new LocalStrategy(verifyCallback);
@@ -33,7 +35,10 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((userId, done) => {
-  User.findById(userId)
-    .then((user) => done(null, user))
-    .catch((err) => done(err));
+  try {
+    const user = User.findById(userId);
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
 });
