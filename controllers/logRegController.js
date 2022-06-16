@@ -29,7 +29,7 @@ const loginPost = (req, res, next) => {
   })(req, res, next);
 };
 
-const registerPost = async (req, res, next) => {
+const registerPost = async (req, res) => {
   try {
     const { agreed, name, username } = req.body;
 
