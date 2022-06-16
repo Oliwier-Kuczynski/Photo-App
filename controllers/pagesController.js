@@ -26,6 +26,10 @@ const registerGet = (req, res) => {
   res.render("register.ejs", { authenticated: false });
 };
 
+const changePasswordGet = (req, res) => {
+  res.render("change-password.ejs", { authenticated: true });
+};
+
 const uploadGet = (req, res) => {
   if (req.isAuthenticated())
     return res.render("upload.ejs", { authenticated: true });
@@ -39,4 +43,5 @@ module.exports = {
   loginGet,
   registerGet,
   uploadGet,
+  changePasswordGet,
 };

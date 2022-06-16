@@ -10,6 +10,8 @@ router.post("/change-password", logRegController.changePasswordPost);
 
 router.post("/close-account", logRegController.closeAccountPost);
 
+router.post("/change-password", logRegController.changePasswordPost);
+
 router.get("/logout", logRegController.logoutGet);
 
 module.exports = router;

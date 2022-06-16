@@ -1,5 +1,8 @@
 const passport = require("passport");
-const genPassword = require("../authentication/passwordUtils").genPassword;
+const {
+  genPassword,
+  validatePassword,
+} = require("../authentication/passwordUtils");
 const connection = require("../models/user");
 const User = connection.models.User;
 
@@ -28,17 +31,15 @@ const loginPost = (req, res, next) => {
 
 const registerPost = async (req, res, next) => {
   try {
-    const existingUser = await User.findOne({ username: req.body.username });
+    const { agreed, name, username } = req.body;
+
+    const existingUser = await User.findOne({ username: username });
 
     if (existingUser)
       return res.status(409).json({
         status: "error",
         message: "User already exists in our database",
       });
-
-    const agreed = req.body.agreed;
-    const name = req.body.name;
-    const username = req.body.username;
 
     if (!agreed) {
       return res.status(451).json({
@@ -92,7 +93,35 @@ const closeAccountPost = async (req, res) => {
   }
 };
 
-const changePasswordPost = (req, res) => {};
+const changePasswordPost = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const { username, hash: oldHash, salt: oldSalt } = req.user;
+
+    if (!validatePassword(oldPassword, oldHash, oldSalt))
+      return res
+        .status(401)
+        .json({ status: "error", message: `Password incorect` });
+
+    const { hash: newHash, salt: newSalt } = genPassword(newPassword);
+
+    await User.findOneAndUpdate(
+      { username: username },
+      { hash: newHash, salt: newSalt }
+    );
+
+    req.logout();
+    res
+      .status(200)
+      .json({ status: "ok", message: "Password updated", redirectUrl: "/" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      status: "error",
+      message: "Something went wrong",
+    });
+  }
+};
 
 module.exports = {
   loginPost,

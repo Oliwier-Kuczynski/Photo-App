@@ -155,6 +155,12 @@ h2,
   border-radius: var(--br-200);
 }
 
+.link-style-inherit {
+  display: inline-block;
+  color: inherit;
+  text-decoration: none;
+}
+
 .green-accent {
   color: var(--accent-color-100);
 }
@@ -205,12 +211,6 @@ h2,
   border-radius: var(--br-200);
   background-color: var(--black);
   color: var(--white);
-}
-
-.main-form a:not([class]) {
-  display: inline-block;
-  text-decoration: none;
-  color: inherit;
 }
 
 .main-form input:not([type="file"]) {

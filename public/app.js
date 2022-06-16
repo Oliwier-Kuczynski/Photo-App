@@ -5,6 +5,9 @@ import * as colcade from "./node_modules/colcade/colcade.js";
 const registerForm = document.querySelector("[data-register-form]");
 const loginForm = document.querySelector("[data-login-form]");
 const uploadForm = document.querySelector("[data-upload-form]");
+const changePasswordForm = document.querySelector(
+  "[data-change-password-form]"
+);
 const menuBtn = document.querySelector("[data-nav-menu-btn]");
 const filterBtn = document.querySelector("[data-filter-btn]");
 const logoutBtn = document.querySelector("[data-logout-btn]");
@@ -12,6 +15,10 @@ const closeAccountBtn = document.querySelector("[data-close-account-btn]");
 
 // Layout related
 const showMessage = (status, message, redirectUrl) => {
+  if (document.querySelector("[data-popup]")) {
+    document.querySelector("[data-popup]").remove();
+  }
+
   const body = document.body;
   const htmlString = `
   <div class="pop-up h2 text-c" data-popup>
@@ -188,6 +195,30 @@ const showConfirmation = function () {
   });
 };
 
+const changePassword = async function (e) {
+  e.preventDefault();
+  const oldPassword = document.querySelector("#old-password").value;
+  const newPassword = document.querySelector("#new-password").value;
+  const confirmPassword = document.querySelector("#confirm-password").value;
+
+  if (newPassword !== confirmPassword) {
+    showMessage("error", "Password does not match");
+    return;
+  }
+
+  const response = await fetch("change-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ oldPassword, newPassword }),
+  });
+
+  const data = await response.json();
+
+  const { status, message, redirectUrl } = data;
+
+  showMessage(status, message, redirectUrl);
+};
+
 // Colcade
 if (document.querySelector(".grid")) {
   new Colcade(".grid", {
@@ -207,6 +238,8 @@ if (document.querySelector(".grid-additional")) {
 if (registerForm) registerForm.addEventListener("submit", register);
 if (loginForm) loginForm.addEventListener("submit", login);
 if (uploadForm) uploadForm.addEventListener("submit", upload);
+if (changePasswordForm)
+  changePasswordForm.addEventListener("submit", changePassword);
 if (logoutBtn) logoutBtn.addEventListener("click", logout);
 if (closeAccountBtn)
   closeAccountBtn.addEventListener("click", showConfirmation);
