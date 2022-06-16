@@ -18,13 +18,13 @@
         <h3 class="profile-section-indicetor gray-accent ">Your Photos</h3>
         <!-- Articles -->
         <!-- prettier-ignore -->
-        <div class="articles-container grid">
+        <div class="articles-container grid" data-articles-grid="">
           <div class="grid-col grid-col--1"></div>
           <div class="grid-col grid-col--2"></div>
           <div class="grid-col grid-col--3"></div>
 
           <article class="ver-spacer grid-item">
-            <img src="img/IMG_20200922_153646.jpg" alt="article photo" loading="lazy">
+            <img src="img/IMG_20200922_153646.jpg" alt="article photo" class="articles-container__article-img" loading="lazy">
             <h2>Central Park New York City</h2>
             <p>is an urban park in New York City, between the Upper West and Upper East Sides of Manhattan. It is the fifth largest park in the city, covering 843 acres (341 ha) <button class="articles-container__highlight">Read more</button></p>
             <div class="articles-container__article-info separetor"><p>10&#36</p><p>By Tom Greenwood</p><p>22/11/20</p> <p>1920x1080</p></div>
@@ -32,7 +32,7 @@
           </article>
 
           <article class="ver-spacer grid-item">
-            <img src="img/eiffel-tower.jpg" alt="article photo" loading="lazy">
+            <img src="img/eiffel-tower.jpg" alt="article photo" class="articles-container__article-img" loading="lazy">
             <h2>Eiffel Tower Paris</h2>
             <p>is an urban park in New York City, between the Upper West and Upper East Sides of Manhattan. It is the fifth largest park in the city, covering 843 acres (341 ha) <button class="articles-container__highlight">Read more</button></p>
             <div class="articles-container__article-info separetor"><p>10&#36</p><p>By Tom Greenwood</p><p>22/11/20</p> <p>1920x1080</p></div>
@@ -40,7 +40,7 @@
           </article>
 
           <article class="ver-spacer grid-item">
-            <img src="img/IMG_20200922_153646.jpg" alt="article photo" loading="lazy">
+            <img src="img/IMG_20200922_153646.jpg" alt="article photo" class="articles-container__article-img" loading="lazy">
             <h2>Central Park New York City</h2>
             <p>is an urb Upper West and  ha) <button class="articles-container__highlight">Read more</button></p>
             <div class="articles-container__article-info separetor"><p>10&#36</p><p>By Tom Greenwood</p><p>22/11/20</p> <p>1920x1080</p></div>
@@ -50,13 +50,13 @@
 
         <h3 class="profile-section-indicetor gray-accent">Your Purchases</h3>
 
-        <div class="articles-container grid-additional">
+        <div class="articles-container grid-additional" data-articles-grid="">
           <div class="grid-col-additional grid-col--1"></div>
           <div class="grid-col-additional grid-col--2"></div>
           <div class="grid-col-additional grid-col--3"></div>
 
           <article class="ver-spacer grid-item-additional">
-            <img src="img/IMG_20200922_153646.jpg" alt="article photo" loading="lazy">
+            <img src="img/IMG_20200922_153646.jpg" alt="article photo" class="articles-container__article-img" loading="lazy">
             <h2>Central Park New York City</h2>
             <p>is an urban park in New York City, between the Upper West and Upper East Sides of Manhattan. It is the fifth largest park in the city, covering 843 acres (341 ha) <button class="articles-container__highlight">Read more</button></p>
             <div class="articles-container__article-info separetor"><p>10&#36</p><p>By Tom Greenwood</p><p>22/11/20</p> <p>1920x1080</p></div>
@@ -64,7 +64,7 @@
           </article>
 
           <article class="ver-spacer grid-item-additional">
-            <img src="img/eiffel-tower.jpg" alt="article photo" loading="lazy">
+            <img src="img/eiffel-tower.jpg" alt="article photo" class="articles-container__article-img" loading="lazy">
             <h2>Eiffel Tower Paris</h2>
             <p>is an urban park in New York City, between the Upper West and Upper East Sides of Manhattan. It is the fifth largest park in the city, covering 843 acres (341 ha) <button class="articles-container__highlight">Read more</button></p>
             <div class="articles-container__article-info separetor"><p>10&#36</p><p>By Tom Greenwood</p><p>22/11/20</p> <p>1920x1080</p></div>
@@ -72,7 +72,7 @@
           </article>
 
           <article class="ver-spacer grid-item-additional">
-            <img src="img/IMG_20200922_153646.jpg" alt="article photo" loading="lazy">
+            <img src="img/IMG_20200922_153646.jpg" alt="article photo" class="articles-container__article-img" loading="lazy">
             <h2>Central Park New York City</h2>
             <p>is an urb Upper West and  ha) <button class="articles-container__highlight">Read more</button></p>
             <div class="articles-container__article-info separetor"><p>10&#36</p><p>By Tom Greenwood</p><p>22/11/20</p> <p>1920x1080</p></div>
@@ -94,6 +94,13 @@
           <div class="separetor">
             <button class="btn-gray" data-option="yes">Yes</button>
             <button class="btn-gray" data-option="no">No</button>
+          </div>
+        </div>
+
+        <div class="zoomed-in-img jc-c ai-c" data-zoomed-in-img="">
+          <div>
+            <button class="btn-dark" data-zoomed-in-img-close-btn=""><img src="img/close.svg" alt=""></button>
+            <img src="img/IMG_20200922_153646.jpg" alt="" data-main-img="">
           </div>
         </div>
       </main>

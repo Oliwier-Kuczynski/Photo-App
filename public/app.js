@@ -12,6 +12,11 @@ const menuBtn = document.querySelector("[data-nav-menu-btn]");
 const filterBtn = document.querySelector("[data-filter-btn]");
 const logoutBtn = document.querySelector("[data-logout-btn]");
 const closeAccountBtn = document.querySelector("[data-close-account-btn]");
+const articlesGrids = document.querySelectorAll("[data-articles-grid]");
+const zoomedInImg = document.querySelector("[data-zoomed-in-img]");
+const zoomedInImgCloseBtn = document.querySelector(
+  "[data-zoomed-in-img-close-btn]"
+);
 
 // Layout related
 const showMessage = (status, message, redirectUrl) => {
@@ -70,6 +75,19 @@ const openFilter = (e) => {
   }
 
   filterMenu.classList.toggle("show");
+};
+
+const zoomImage = (e) => {
+  const targetImg = e.target.closest("img");
+
+  if (!targetImg) return;
+
+  zoomedInImg.querySelector("[data-main-img]").src = targetImg.src;
+  zoomedInImg.classList.add("show");
+};
+
+const unZoomImage = () => {
+  zoomedInImg.classList.remove("show");
 };
 
 // Sending requsets to the backend
@@ -241,7 +259,13 @@ if (uploadForm) uploadForm.addEventListener("submit", upload);
 if (changePasswordForm)
   changePasswordForm.addEventListener("submit", changePassword);
 if (logoutBtn) logoutBtn.addEventListener("click", logout);
+if (zoomedInImgCloseBtn)
+  zoomedInImgCloseBtn.addEventListener("click", unZoomImage);
 if (closeAccountBtn)
   closeAccountBtn.addEventListener("click", showConfirmation);
+if (articlesGrids)
+  articlesGrids.forEach((articlesGrid) =>
+    articlesGrid.addEventListener("click", zoomImage)
+  );
 menuBtn.addEventListener("click", openMenu);
 filterBtn.addEventListener("click", openFilter);
