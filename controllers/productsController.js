@@ -5,13 +5,17 @@ const uploadPost = (req, res) => {
   const title = req.body.title;
   const description = req.body.description;
   const price = req.body.price;
-  const imgUrl = req.file.path;
+  const authorName = req.user.name;
+  const imgUrlOrginal = req.file.path;
+
+  const imgUrl = imgUrlOrginal.replace("uploads", "");
 
   const newProduct = new Product({
     title,
     description,
     price,
     imgUrl,
+    authorName,
   });
 
   newProduct.save();
@@ -19,4 +23,9 @@ const uploadPost = (req, res) => {
   res.json({ status: "ok", message: "Item uploaded" });
 };
 
-module.exports = { uploadPost };
+const getAllProducts = async () => {
+  const allProducts = await Product.find({});
+  return allProducts;
+};
+
+module.exports = { uploadPost, getAllProducts };

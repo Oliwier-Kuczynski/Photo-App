@@ -3,10 +3,6 @@ const connection = require("../database");
 
 const ProductSchema = new mongoose.Schema(
   {
-    id: {
-      type: String,
-      required: true,
-    },
     title: {
       type: String,
       required: true,
@@ -17,6 +13,10 @@ const ProductSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
+      required: true,
+    },
+    authorName: {
+      type: String,
       required: true,
     },
     imgUrl: {

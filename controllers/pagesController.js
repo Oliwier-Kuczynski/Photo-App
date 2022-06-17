@@ -1,7 +1,15 @@
-const homePageGet = (req, res) => {
-  if (req.isAuthenticated())
-    return res.render("index.ejs", { authenticated: true });
-  res.render("index.ejs", { authenticated: false });
+const productsController = require("../controllers/productsController");
+
+const homePageGet = async (req, res) => {
+  const allProducts = await productsController.getAllProducts();
+
+  if (req.isAuthenticated()) {
+    return res.render("index.ejs", {
+      authenticated: true,
+      products: allProducts,
+    });
+  }
+  res.render("index.ejs", { authenticated: false, products: allProducts });
 };
 
 const aboutGet = (req, res) => {
