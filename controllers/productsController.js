@@ -1,7 +1,10 @@
-const connection = require("../models/products");
-const Product = connection.models.Product;
+const { use } = require("passport");
+const productConnection = require("../models/products");
+const userConnection = require("../models/user");
+const Product = productConnection.models.Product;
+const User = userConnection.models.User;
 
-const uploadPost = (req, res) => {
+const uploadPost = async (req, res) => {
   const title = req.body.title;
   const description = req.body.description;
   const price = req.body.price;
@@ -18,7 +21,12 @@ const uploadPost = (req, res) => {
     authorName,
   });
 
-  newProduct.save();
+  const product = await newProduct.save();
+
+  await User.findOneAndUpdate(
+    { username: req.user.username },
+    { $push: { uploadedProducts: product._id } }
+  );
 
   res.json({ status: "ok", message: "Item uploaded", redirectUrl: "/" });
 };
@@ -28,4 +36,16 @@ const getAllProducts = async () => {
   return allProducts;
 };
 
-module.exports = { uploadPost, getAllProducts };
+const getAllProductsUploadedByUser = async (req, res) => {
+  const allProducts = await Product.find({});
+
+  const allUserProductsIds = req.user.uploadedProducts;
+
+  const allUserProducts = allProducts.filter((product) =>
+    allUserProductsIds.includes(product._id)
+  );
+
+  return allUserProducts;
+};
+
+module.exports = { uploadPost, getAllProducts, getAllProductsUploadedByUser };

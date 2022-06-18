@@ -18,8 +18,13 @@ const aboutGet = (req, res) => {
   res.render("about.ejs", { authenticated: false });
 };
 
-const profileGet = (req, res) => {
-  res.render("profile.ejs", { authenticated: true });
+const profileGet = async (req, res) => {
+  const allUserProducts = await productsController.getAllProductsUploadedByUser(
+    req,
+    res
+  );
+
+  res.render("profile.ejs", { authenticated: true, products: allUserProducts });
 };
 
 const loginGet = (req, res) => {

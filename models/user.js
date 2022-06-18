@@ -20,13 +20,13 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    uploadedImages: {
-      type: { type: String },
-      value: [String],
+    uploadedProducts: {
+      type: Array,
+      default: "",
     },
-    purchasedImages: {
-      type: { type: String },
-      value: [String],
+    purchasedProducts: {
+      type: Array,
+      default: "",
     },
   },
   { timestamps: true }

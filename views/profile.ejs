@@ -23,29 +23,17 @@
           <div class="grid-col grid-col--2"></div>
           <div class="grid-col grid-col--3"></div>
 
-          <article class="ver-spacer grid-item">
-            <img src="img/IMG_20200922_153646.jpg" alt="article photo" class="articles-container__article-img" loading="lazy">
-            <h2>Central Park New York City</h2>
-            <p>is an urban park in New York City, between the Upper West and Upper East Sides of Manhattan. It is the fifth largest park in the city, covering 843 acres (341 ha) <button class="articles-container__highlight">Read more</button></p>
-            <div class="articles-container__article-info separetor"><p>10&#36</p><p>By Tom Greenwood</p><p>22/11/20</p> <p>1920x1080</p></div>
-            <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
-          </article>
+          <% products.forEach(product => { %>
+            <% const date = product.createdAt.toISOString().split('T')[0].replaceAll('-', '/'); %> 
 
-          <article class="ver-spacer grid-item">
-            <img src="img/eiffel-tower.jpg" alt="article photo" class="articles-container__article-img" loading="lazy">
-            <h2>Eiffel Tower Paris</h2>
-            <p>is an urban park in New York City, between the Upper West and Upper East Sides of Manhattan. It is the fifth largest park in the city, covering 843 acres (341 ha) <button class="articles-container__highlight">Read more</button></p>
-            <div class="articles-container__article-info separetor"><p>10&#36</p><p>By Tom Greenwood</p><p>22/11/20</p> <p>1920x1080</p></div>
+            <article class="ver-spacer grid-item">
+            <img src="<%= product.imgUrl %>" alt="article photo" class="articles-container__article-img" loading="lazy">
+            <h2><%= product.title %></h2>
+            <p><%= product.description %> <button class="articles-container__highlight">Read more</button></p>
+            <div class="articles-container__article-info separetor"><p>Price: <%= product.price  %> &#36</p><p>Author: <%= product.authorName %> </p><p>Uploaded: <%= date %></p> <p>Resolution: 1920x1080</p></div>
             <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
           </article>
-
-          <article class="ver-spacer grid-item">
-            <img src="img/IMG_20200922_153646.jpg" alt="article photo" class="articles-container__article-img" loading="lazy">
-            <h2>Central Park New York City</h2>
-            <p>is an urb Upper West and  ha) <button class="articles-container__highlight">Read more</button></p>
-            <div class="articles-container__article-info separetor"><p>10&#36</p><p>By Tom Greenwood</p><p>22/11/20</p> <p>1920x1080</p></div>
-            <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
-          </article>
+          <% }); %>
         </div>
 
         <h3 class="profile-section-indicetor gray-accent">Your Purchases</h3>
