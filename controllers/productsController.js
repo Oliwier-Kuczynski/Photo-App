@@ -20,7 +20,7 @@ const uploadPost = (req, res) => {
 
   newProduct.save();
 
-  res.json({ status: "ok", message: "Item uploaded" });
+  res.json({ status: "ok", message: "Item uploaded", redirectUrl: "/" });
 };
 
 const getAllProducts = async () => {

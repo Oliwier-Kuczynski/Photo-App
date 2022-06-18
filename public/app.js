@@ -163,9 +163,9 @@ const upload = async function (e) {
 
   const data = await response.json();
 
-  const { status, message } = data;
+  const { status, message, redirectUrl } = data;
 
-  showMessage(status, message);
+  showMessage(status, message, redirectUrl);
 };
 
 const logout = async function (e) {

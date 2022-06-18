@@ -20,6 +20,14 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    uploadedImages: {
+      type: { type: String },
+      value: [String],
+    },
+    purchasedImages: {
+      type: { type: String },
+      value: [String],
+    },
   },
   { timestamps: true }
 );
