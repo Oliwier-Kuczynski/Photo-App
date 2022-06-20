@@ -23,6 +23,8 @@ const logoutBtn = document.querySelector("[data-logout-btn]");
 
 const closeAccountBtn = document.querySelector("[data-close-account-btn]");
 
+const deletPostBtn = document.querySelector("[data-delete-btn]");
+
 const articlesGrids = document.querySelectorAll("[data-articles-grid]");
 
 const zoomedInImg = document.querySelector("[data-zoomed-in-img]");
@@ -182,16 +184,34 @@ const formDataUploadEdit = async function (fetchUrl, invokingElement) {
   showMessage(status, message, redirectUrl);
 };
 
-const upload = function (e) {
+const uploadPost = function (e) {
   e.preventDefault();
 
   formDataUploadEdit("/upload", uploadForm);
 };
 
-const edit = function (e) {
+const editPost = function (e) {
   e.preventDefault();
 
   formDataUploadEdit("/edit", editForm);
+};
+
+const deletePost = async function (e) {
+  const id = e.target.closest(".grid-item").id;
+
+  const response = await fetch("/delete", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id,
+    }),
+  });
+
+  const data = await response.json();
+
+  const { status, message, redirectUrl } = data;
+
+  showMessage(status, message, redirectUrl);
 };
 
 const logout = async function (e) {
@@ -283,9 +303,11 @@ if (registerForm) registerForm.addEventListener("submit", register);
 
 if (loginForm) loginForm.addEventListener("submit", login);
 
-if (uploadForm) uploadForm.addEventListener("submit", upload);
+if (uploadForm) uploadForm.addEventListener("submit", uploadPost);
 
-if (editForm) editForm.addEventListener("submit", edit);
+if (editForm) editForm.addEventListener("submit", editPost);
+
+if (deletPostBtn) deletPostBtn.addEventListener("click", deletePost);
 
 if (changePasswordForm)
   changePasswordForm.addEventListener("submit", changePassword);

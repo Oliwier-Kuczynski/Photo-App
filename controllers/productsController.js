@@ -32,66 +32,88 @@ const getAllProductsUploadedByUser = async (req, res) => {
 };
 
 const uploadPost = async (req, res) => {
-  const title = req.body.title;
-  const description = req.body.description;
-  const price = req.body.price;
-  const authorName = req.user.name;
-  const imgUrlOrginal = req.file.path;
+  try {
+    const title = req.body.title;
+    const description = req.body.description;
+    const price = req.body.price;
+    const authorName = req.user.name;
+    const imgUrlOrginal = req.file.path;
 
-  const imgUrl = imgUrlOrginal.replace("uploads", "");
+    const imgUrl = imgUrlOrginal.replace("uploads", "");
 
-  const newProduct = new Product({
-    title,
-    description,
-    price,
-    imgUrl,
-    authorName,
-  });
-
-  const product = await newProduct.save();
-
-  await User.findOneAndUpdate(
-    { username: req.user.username },
-    { $push: { uploadedProducts: product._id } }
-  );
-
-  res
-    .status(200)
-    .json({ status: "ok", message: "Item uploaded", redirectUrl: "/" });
-};
-
-const editPost = async (req, res) => {
-  const productId = req.body.id;
-  const product = await getSpecificProduct(productId);
-
-  const title = req.body.title || product.title;
-  const description = req.body.description || product.description;
-  const price = req.body.price || product.price;
-  const imgUrlOrginal = req.file?.path || product.imgUrl;
-  const authorName = product.authorName;
-
-  const imgUrl = imgUrlOrginal?.replace("uploads", "");
-
-  if (!belongsToUser(req.user, productId))
-    return res.status(403).json({
-      status: "error",
-      message: "You don't have permission to do this operation",
-    });
-
-  await Product.replaceOne(
-    { _id: productId },
-    {
+    const newProduct = new Product({
       title,
       description,
       price,
       imgUrl,
       authorName,
-    }
-  );
+    });
 
-  res
-    .status(200)
-    .json({ status: "ok", message: "Item edited", redirectUrl: "/profile" });
+    const product = await newProduct.save();
+
+    await User.findOneAndUpdate(
+      { username: req.user.username },
+      { $push: { uploadedProducts: product._id } }
+    );
+
+    res
+      .status(200)
+      .json({ status: "ok", message: "Item uploaded", redirectUrl: "/" });
+  } catch (err) {
+    res.status(500).json({ status: "erro", message: "Something went wrong" });
+  }
+};
+
+const editPost = async (req, res) => {
+  try {
+    const productId = req.body.id;
+    const product = await getSpecificProduct(productId);
+
+    const title = req.body.title || product.title;
+    const description = req.body.description || product.description;
+    const price = req.body.price || product.price;
+    const imgUrlOrginal = req.file?.path || product.imgUrl;
+    const authorName = product.authorName;
+
+    const imgUrl = imgUrlOrginal?.replace("uploads", "");
+
+    if (!belongsToUser(req.user, productId))
+      return res.status(403).json({
+        status: "error",
+        message: "You don't have permission to do this operation",
+      });
+
+    await Product.replaceOne(
+      { _id: productId },
+      {
+        title,
+        description,
+        price,
+        imgUrl,
+        authorName,
+      }
+    );
+
+    res
+      .status(200)
+      .json({ status: "ok", message: "Item edited", redirectUrl: "/profile" });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: "Something went wrong" });
+  }
+};
+
+const deletePost = async (req, res) => {
+  try {
+    const productId = req.body.id;
+
+    await Product.findByIdAndDelete(productId);
+
+    res
+      .status(200)
+      .json({ status: "ok", message: "Item deleted", redirectUrl: "/profile" });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: "Something went wrong" });
+  }
 };
 
 module.exports = {
@@ -100,4 +122,5 @@ module.exports = {
   getAllProducts,
   getAllProductsUploadedByUser,
   getSpecificProduct,
+  deletePost,
 };

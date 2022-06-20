@@ -31,8 +31,10 @@
               <h2><%= product.title %></h2>
               <p><%= product.description %> <button class="articles-container__highlight">Read more</button></p>
               <div class="articles-container__article-info separetor"><p>Price: <%= product.price  %> &#36</p><p>Author: <%= product.authorName %> </p><p>Uploaded: <%= date %></p> <p>Resolution: 1920x1080</p></div>
-              <a href="edit?id=<%= product._id %>" class="btn-gray articles-container__button ai-c" data-edit-btn="">Edit <img src="img/edit.svg" alt="edit"></a>
-              <button class="btn-gray articles-container__button ai-c" data-delete-btn="">Delete <img src="img/edit.svg" alt="delete"></button>
+              <div class="separetor">
+                <a href="edit?id=<%= product._id %>" class="btn-gray articles-container__button ai-c" data-edit-btn="">Edit <img src="img/edit.svg" alt="edit"></a>
+                <button class="btn-gray articles-container__button ai-c" data-delete-btn="">Delete <img src="img/edit.svg" alt="delete"></button>
+              </div>
             </article>
           <% }); %>
         </div>
