@@ -26,13 +26,14 @@
           <% products.forEach(product => { %>
             <% const date = product.createdAt.toISOString().split('T')[0].replaceAll('-', '/'); %> 
 
-            <article class="ver-spacer grid-item">
-            <img src="<%= product.imgUrl %>" alt="article photo" class="articles-container__article-img" loading="lazy">
-            <h2><%= product.title %></h2>
-            <p><%= product.description %> <button class="articles-container__highlight">Read more</button></p>
-            <div class="articles-container__article-info separetor"><p>Price: <%= product.price  %> &#36</p><p>Author: <%= product.authorName %> </p><p>Uploaded: <%= date %></p> <p>Resolution: 1920x1080</p></div>
-            <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
-          </article>
+            <article class="ver-spacer grid-item" id="<%= product._id %>">
+              <img src="<%= product.imgUrl %>" alt="article photo" class="articles-container__article-img" loading="lazy">
+              <h2><%= product.title %></h2>
+              <p><%= product.description %> <button class="articles-container__highlight">Read more</button></p>
+              <div class="articles-container__article-info separetor"><p>Price: <%= product.price  %> &#36</p><p>Author: <%= product.authorName %> </p><p>Uploaded: <%= date %></p> <p>Resolution: 1920x1080</p></div>
+              <a href="edit?id=<%= product._id %>" class="btn-gray articles-container__button ai-c" data-edit-btn="">Edit <img src="img/edit.svg" alt="edit"></a>
+              <button class="btn-gray articles-container__button ai-c" data-delete-btn="">Delete <img src="img/edit.svg" alt="delete"></button>
+            </article>
           <% }); %>
         </div>
 

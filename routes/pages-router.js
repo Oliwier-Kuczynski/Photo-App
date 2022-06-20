@@ -15,6 +15,8 @@ router.get("/change-password", isAuth, pagesController.changePasswordGet);
 
 router.get("/profile", isAuth, pagesController.profileGet);
 
-router.get("/upload", pagesController.uploadGet);
+router.get("/upload", isAuth, pagesController.uploadGet);
+
+router.get("/edit", isAuth, pagesController.editGet);
 
 module.exports = router;

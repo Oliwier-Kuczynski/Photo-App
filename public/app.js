@@ -2,18 +2,31 @@
 
 import * as colcade from "./node_modules/colcade/colcade.js";
 
+// Selections
 const registerForm = document.querySelector("[data-register-form]");
+
 const loginForm = document.querySelector("[data-login-form]");
+
 const uploadForm = document.querySelector("[data-upload-form]");
+
+const editForm = document.querySelector("[data-edit-form]");
+
 const changePasswordForm = document.querySelector(
   "[data-change-password-form]"
 );
+
 const menuBtn = document.querySelector("[data-nav-menu-btn]");
+
 const filterBtn = document.querySelector("[data-filter-btn]");
+
 const logoutBtn = document.querySelector("[data-logout-btn]");
+
 const closeAccountBtn = document.querySelector("[data-close-account-btn]");
+
 const articlesGrids = document.querySelectorAll("[data-articles-grid]");
+
 const zoomedInImg = document.querySelector("[data-zoomed-in-img]");
+
 const zoomedInImgCloseBtn = document.querySelector(
   "[data-zoomed-in-img-close-btn]"
 );
@@ -142,21 +155,22 @@ const login = async function (e) {
   showMessage(status, message, redirectUrl);
 };
 
-const upload = async function (e) {
-  e.preventDefault();
-  const title = uploadForm.querySelector("#title").value;
-  const description = uploadForm.querySelector("#description").value;
-  const price = uploadForm.querySelector("#price").value;
-  const image = uploadForm.querySelector("#image").files[0];
+const formDataUploadEdit = async function (fetchUrl, invokingElement) {
+  const id = invokingElement.id;
+  const title = invokingElement.querySelector("#title").value;
+  const description = invokingElement.querySelector("#description").value;
+  const price = invokingElement.querySelector("#price").value;
+  const image = invokingElement.querySelector("#image").files[0];
 
   const formData = new FormData();
 
+  formData.append("id", id);
   formData.append("title", title);
   formData.append("description", description);
   formData.append("price", price);
   formData.append("image", image);
 
-  const response = await fetch("/upload", {
+  const response = await fetch(fetchUrl, {
     method: "POST",
     body: formData,
   });
@@ -166,6 +180,18 @@ const upload = async function (e) {
   const { status, message, redirectUrl } = data;
 
   showMessage(status, message, redirectUrl);
+};
+
+const upload = function (e) {
+  e.preventDefault();
+
+  formDataUploadEdit("/upload", uploadForm);
+};
+
+const edit = function (e) {
+  e.preventDefault();
+
+  formDataUploadEdit("/edit", editForm);
 };
 
 const logout = async function (e) {
@@ -254,18 +280,29 @@ if (document.querySelector(".grid-additional")) {
 
 // Eventlistners
 if (registerForm) registerForm.addEventListener("submit", register);
+
 if (loginForm) loginForm.addEventListener("submit", login);
+
 if (uploadForm) uploadForm.addEventListener("submit", upload);
+
+if (editForm) editForm.addEventListener("submit", edit);
+
 if (changePasswordForm)
   changePasswordForm.addEventListener("submit", changePassword);
+
 if (logoutBtn) logoutBtn.addEventListener("click", logout);
+
 if (zoomedInImgCloseBtn)
   zoomedInImgCloseBtn.addEventListener("click", unZoomImage);
+
 if (closeAccountBtn)
   closeAccountBtn.addEventListener("click", showConfirmation);
+
 if (articlesGrids)
   articlesGrids.forEach((articlesGrid) =>
     articlesGrid.addEventListener("click", zoomImage)
   );
+
 menuBtn.addEventListener("click", openMenu);
+
 filterBtn.addEventListener("click", openFilter);

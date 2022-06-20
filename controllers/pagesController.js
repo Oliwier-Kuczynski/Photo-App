@@ -44,9 +44,17 @@ const changePasswordGet = (req, res) => {
 };
 
 const uploadGet = (req, res) => {
-  if (req.isAuthenticated())
-    return res.render("upload.ejs", { authenticated: true });
-  res.render("upload.ejs", { authenticated: false });
+  res.render("upload.ejs", { authenticated: true });
+};
+
+const editGet = async (req, res) => {
+  try {
+    const product = await productsController.getSpecificProduct(req.query.id);
+
+    res.render("edit.ejs", { authenticated: true, product: product });
+  } catch (err) {
+    res.status(500).send();
+  }
 };
 
 module.exports = {
@@ -57,4 +65,5 @@ module.exports = {
   registerGet,
   uploadGet,
   changePasswordGet,
+  editGet,
 };

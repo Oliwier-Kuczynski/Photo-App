@@ -22,7 +22,7 @@
           <% products.forEach(product => { %>
             <% const date = product.createdAt.toISOString().split('T')[0].replaceAll('-', '/'); %> 
 
-            <article class="ver-spacer grid-item">
+            <article class="ver-spacer grid-item" id="<% product._id %>">
             <img src="<%= product.imgUrl %>" alt="article photo" class="articles-container__article-img" loading="lazy">
             <h2><%= product.title %></h2>
             <p><%= product.description %> <button class="articles-container__highlight">Read more</button></p>

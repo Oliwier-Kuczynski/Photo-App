@@ -1,8 +1,35 @@
-const { use } = require("passport");
 const productConnection = require("../models/products");
 const userConnection = require("../models/user");
 const Product = productConnection.models.Product;
 const User = userConnection.models.User;
+
+const belongsToUser = (user, productId) => {
+  if (user.uploadedProducts.includes(productId)) return true;
+  return false;
+};
+
+const getSpecificProduct = async (id) => {
+  const specificProduct = await Product.findById(id);
+
+  return specificProduct;
+};
+
+const getAllProducts = async () => {
+  const allProducts = await Product.find({});
+  return allProducts;
+};
+
+const getAllProductsUploadedByUser = async (req, res) => {
+  const allProducts = await Product.find({});
+
+  const allUserProductsIds = req.user.uploadedProducts;
+
+  const allUserProducts = allProducts.filter((product) =>
+    allUserProductsIds.includes(product._id)
+  );
+
+  return allUserProducts;
+};
 
 const uploadPost = async (req, res) => {
   const title = req.body.title;
@@ -28,24 +55,49 @@ const uploadPost = async (req, res) => {
     { $push: { uploadedProducts: product._id } }
   );
 
-  res.json({ status: "ok", message: "Item uploaded", redirectUrl: "/" });
+  res
+    .status(200)
+    .json({ status: "ok", message: "Item uploaded", redirectUrl: "/" });
 };
 
-const getAllProducts = async () => {
-  const allProducts = await Product.find({});
-  return allProducts;
-};
+const editPost = async (req, res) => {
+  const productId = req.body.id;
+  const product = await getSpecificProduct(productId);
 
-const getAllProductsUploadedByUser = async (req, res) => {
-  const allProducts = await Product.find({});
+  const title = req.body.title || product.title;
+  const description = req.body.description || product.description;
+  const price = req.body.price || product.price;
+  const imgUrlOrginal = req.file?.path || product.imgUrl;
+  const authorName = product.authorName;
 
-  const allUserProductsIds = req.user.uploadedProducts;
+  const imgUrl = imgUrlOrginal?.replace("uploads", "");
 
-  const allUserProducts = allProducts.filter((product) =>
-    allUserProductsIds.includes(product._id)
+  if (!belongsToUser(req.user, productId))
+    return res.status(403).json({
+      status: "error",
+      message: "You don't have permission to do this operation",
+    });
+
+  await Product.replaceOne(
+    { _id: productId },
+    {
+      title,
+      description,
+      price,
+      imgUrl,
+      authorName,
+    }
   );
 
-  return allUserProducts;
+  res
+    .status(200)
+    .json({ status: "ok", message: "Item edited", redirectUrl: "/profile" });
 };
 
-module.exports = { uploadPost, getAllProducts, getAllProductsUploadedByUser };
+module.exports = {
+  uploadPost,
+  editPost,
+  getAllProducts,
+  getAllProductsUploadedByUser,
+  getSpecificProduct,
+};

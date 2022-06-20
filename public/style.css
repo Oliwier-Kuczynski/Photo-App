@@ -313,7 +313,7 @@ textarea {
   top: 0;
   left: 0;
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   padding-inline: 1rem;
   z-index: 10002;
   background-color: hsla(0, 0%, 28%, 0.98);
@@ -324,7 +324,11 @@ textarea {
 }
 
 .zoomed-in-img div {
-  max-width: calc(100vh - 20rem);
+  padding-block: 2rem;
+}
+
+.zoomed-in-img div img {
+  max-height: 85vh;
 }
 
 .zoomed-in-img button {
@@ -447,13 +451,17 @@ textarea {
   display: grid;
 }
 
-.filter-menu li {
-  display: flex;
+.filter-menu button {
+  display: block;
+  position: relative;
 }
 
 .filter-menu img {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: -1.5rem;
   width: 1rem;
-  margin-left: 0.5rem;
 }
 
 /* Articles */
@@ -463,6 +471,7 @@ textarea {
 }
 
 .articles-container > * {
+  position: relative;
   flex: 1;
 }
 
@@ -499,6 +508,8 @@ textarea {
 
 .articles-container__button {
   gap: calc(var(--spacer) * 0.75);
+  max-height: 1.7875rem;
+  width: max-content;
 }
 
 .articles-container__button img {

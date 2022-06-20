@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+  </head>
+  <body>
+    <div class="container">
+      <%- include('partials/navigation')%>
+      <form
+        class="main-form"
+        data-edit-form=""
+        enctype="multipart/form-data"
+        id="<%= product._id %>"
+      >
+        <div class="ver-spacer">
+          <div>
+            <label for="title">Title</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value="<%= product.title %>"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="Description">Description</label>
+            <textarea
+              id="description"
+              name="description"
+              cols="30"
+              rows="10"
+              required
+            >
+<%= product.description %></textarea
+            >
+          </div>
+
+          <div>
+            <label for="price">Price</label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value="<%= product.price %>"
+              required
+            />
+          </div>
+
+          <input type="file" id="image" name="image" />
+        </div>
+
+        <button class="btn-accent b-margin-top" type="submit">Update</button>
+      </form>
+      <!-- prettier-ignore -->
+      <a href="#" class="btn-dark checkout-btn ai-c"><span>Checkout</span> <span class="checkout-btn__left-column ai-c"><span>3<span class="green-accent">x</span></span> <span>Total: <span class="green-accent">45$</span></span></span></a>
+    </div>
+  </body>
+</html>
