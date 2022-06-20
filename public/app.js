@@ -64,6 +64,26 @@ const showMessage = (status, message, redirectUrl) => {
   }, 4000);
 };
 
+const showConfirmation = function (callback) {
+  const confirmationPopup = document.querySelector(
+    "[data-confiramtion-pop-up]"
+  );
+
+  confirmationPopup.classList.add("show");
+
+  confirmationPopup.addEventListener("click", (e) => {
+    const target = e.target;
+
+    if (target.dataset.option === "yes") {
+      callback(e);
+      confirmationPopup.classList.remove("show");
+    }
+
+    if (target.dataset.option === "no")
+      confirmationPopup.classList.remove("show");
+  });
+};
+
 const openMenu = () => {
   const menu = document.querySelector("[data-nav-menu]");
   const menuSpace = document.querySelector("[data-nav-menu-space]");
@@ -228,35 +248,16 @@ const logout = async function (e) {
   showMessage(status, message, redirectUrl);
 };
 
-const showConfirmation = function () {
-  const confirmationPopup = document.querySelector(
-    "[data-confiramtion-pop-up]"
-  );
-
-  const deleteAccountFetch = async () => {
-    const response = await fetch("close-account", {
-      method: "POST",
-    });
-
-    const data = await response.json();
-
-    const { status, message, redirectUrl } = data;
-
-    showMessage(status, message, redirectUrl);
-
-    confirmationPopup.classList.remove("show");
-  };
-
-  confirmationPopup.classList.add("show");
-
-  confirmationPopup.addEventListener("click", (e) => {
-    const target = e.target;
-
-    if (target.dataset.option === "yes") deleteAccountFetch();
-
-    if (target.dataset.option === "no")
-      confirmationPopup.classList.remove("show");
+const deleteAccount = async () => {
+  const response = await fetch("close-account", {
+    method: "POST",
   });
+
+  const data = await response.json();
+
+  const { status, message, redirectUrl } = data;
+
+  showMessage(status, message, redirectUrl);
 };
 
 const changePassword = async function (e) {
@@ -307,7 +308,10 @@ if (uploadForm) uploadForm.addEventListener("submit", uploadPost);
 
 if (editForm) editForm.addEventListener("submit", editPost);
 
-if (deletPostBtn) deletPostBtn.addEventListener("click", deletePost);
+if (deletPostBtn)
+  deletPostBtn.addEventListener("click", (e) =>
+    showConfirmation(deletePost.bind(this, e))
+  );
 
 if (changePasswordForm)
   changePasswordForm.addEventListener("submit", changePassword);
@@ -318,7 +322,9 @@ if (zoomedInImgCloseBtn)
   zoomedInImgCloseBtn.addEventListener("click", unZoomImage);
 
 if (closeAccountBtn)
-  closeAccountBtn.addEventListener("click", showConfirmation);
+  closeAccountBtn.addEventListener("click", () =>
+    showConfirmation(deleteAccount)
+  );
 
 if (articlesGrids)
   articlesGrids.forEach((articlesGrid) =>

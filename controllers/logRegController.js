@@ -60,6 +60,8 @@ const registerPost = async (req, res) => {
 
     newUser.save();
 
+    req.logout();
+
     res
       .status(201)
       .json({ redirectUrl: "/", status: "ok", message: "New user created" });

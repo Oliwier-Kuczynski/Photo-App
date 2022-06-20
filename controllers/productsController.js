@@ -56,9 +56,11 @@ const uploadPost = async (req, res) => {
       { $push: { uploadedProducts: product._id } }
     );
 
-    res
-      .status(200)
-      .json({ status: "ok", message: "Item uploaded", redirectUrl: "/" });
+    res.status(200).json({
+      status: "ok",
+      message: "Item uploaded",
+      redirectUrl: "/profile",
+    });
   } catch (err) {
     res.status(500).json({ status: "erro", message: "Something went wrong" });
   }
@@ -105,6 +107,12 @@ const editPost = async (req, res) => {
 const deletePost = async (req, res) => {
   try {
     const productId = req.body.id;
+
+    if (!belongsToUser(req.user, productId))
+      return res.status(403).json({
+        status: "error",
+        message: "You don't have permission to do this operation",
+      });
 
     await Product.findByIdAndDelete(productId);
 
