@@ -24,7 +24,11 @@ const profileGet = async (req, res) => {
     res
   );
 
-  res.render("profile.ejs", { authenticated: true, products: allUserProducts });
+  res.render("profile.ejs", {
+    authenticated: true,
+    products: allUserProducts,
+    usersName: req.user.name,
+  });
 };
 
 const loginGet = (req, res) => {
