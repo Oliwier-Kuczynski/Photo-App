@@ -1,52 +1,54 @@
-<nav class="primary-nav ai-c">
-  <form class="primary-nav__search ai-c">
+<div class="primary-nav">
+  <div class="primary-nav__content">
     <button class="btn-gray" aria-label="Filter results" data-filter-btn="">
-      <img src="img/filter-list.svg" alt="filter results icon" />
+      <img src="img/filter-list.svg" alt="" />
     </button>
 
-    <div class="primary-nav__search-bar ai-c">
-      <button aria-label="Search button" type="submit">
-        <img src="img/search-icon.svg" alt="search icon" />
-      </button>
-      <input type="text" />
-    </div>
-  </form>
-  <ul class="primary-nav__menu menu" data-nav-menu>
-    <li><a href="/">Home</a></li>
-    <li><a href="about">About</a></li>
-    <% if(authenticated) { %>
-    <li><a href="profile">Profile</a></li>
-    <li><a href="logout" data-logout-btn="">Logout</a></li>
-    <% } %>
-    <!-- prittier-ignore -->
-    <% if(!authenticated) { %>
-    <li><a href="login">Login</a></li>
-    <li><a href="register">Register</a></li>
-    <% } %>
-  </ul>
-  <button
-    class="btn-gray primary-nav__menu-btn"
-    aria-label="Menu"
-    data-nav-menu-btn
-  >
-    <img src="img/hamburger-menu.svg" alt="hamburger menu icon" />
-  </button>
-</nav>
+    <form>
+      <div class="primary-nav__content__search-bar ai-c">
+        <button aria-label="Search button" type="submit">
+          <img src="img/search-icon.svg" alt="search icon" />
+        </button>
+        <input type="text" />
+      </div>
 
-<ul class="filter-menu menu jc-c" data-filter-menu="">
-  <li class="jc-c"><button>Popularity</button></li>
-  <li class="jc-c">
-    <button>Price <img src="/img/arrow_upward.svg" alt="" /></button>
-  </li>
-  <li class="jc-c">
-    <button>Price <img src="/img/arrow_downward.svg" alt="" /></button>
-  </li>
-  <li class="jc-c">
-    <button>Added <img src="/img/arrow_upward.svg" alt="" /></button>
-  </li>
-  <li class="jc-c">
-    <button>Added <img src="/img/arrow_downward.svg" alt="" /></button>
-  </li>
-</ul>
+      <select class="primary-nav__filter menu" data-filter-menu="">
+        <option value="popularity">Popularity</option>
+        <option value="price-ascending">Price (high to low)</option>
+        <option value="price-descending">Price (low to high)</option>
+        <option value="added-date-ascending">Added (newest)</option>
+        <option value="added-date-descending">Added (oldest)</option>
+      </select>
+    </form>
 
-<div class="menu-space" data-nav-menu-space></div>
+    <button
+      class="btn-gray primary-nav__open-menu-btn"
+      aria-label="Menu"
+      data-nav-menu-btn
+    >
+      <img src="img/hamburger-menu.svg" alt="" />
+    </button>
+  </div>
+
+  <nav class="ai-c">
+    <ul class="primary-nav__menu menu" data-nav-menu>
+      <li><a href="/" class="link-style-inherit">Home</a></li>
+      <li><a href="about" class="link-style-inherit">About</a></li>
+      <% if(authenticated) { %>
+      <li><a href="profile" class="link-style-inherit">Profile</a></li>
+      <li>
+        <a href="logout" class="link-style-inherit" data-logout-btn=""
+          >Logout</a
+        >
+      </li>
+      <% } %>
+      <!-- prittier-ignore -->
+      <% if(!authenticated) { %>
+      <li><a href="login" class="link-style-inherit">Login</a></li>
+      <li><a href="register" class="link-style-inherit">Register</a></li>
+      <% } %>
+    </ul>
+  </nav>
+</div>
+
+<div class="primary-nav__space" data-nav-space=""></div>

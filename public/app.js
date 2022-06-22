@@ -86,30 +86,32 @@ const showConfirmation = function (callback) {
 
 const openMenu = () => {
   const menu = document.querySelector("[data-nav-menu]");
-  const menuSpace = document.querySelector("[data-nav-menu-space]");
   const filterMenu = document.querySelector("[data-filter-menu]");
+  const navSpace = document.querySelector("[data-nav-space]");
 
   if (filterMenu.classList.contains("show")) {
     filterMenu.classList.remove("show");
   }
 
   menu.classList.toggle("show");
-  menuSpace.classList.toggle("show");
+
+  navSpace.style.height = `${menu.getBoundingClientRect().height}px`;
 };
 
 const openFilter = (e) => {
   e.preventDefault();
 
   const menu = document.querySelector("[data-nav-menu]");
-  const menuSpace = document.querySelector("[data-nav-menu-space]");
   const filterMenu = document.querySelector("[data-filter-menu]");
+  const navSpace = document.querySelector("[data-nav-space]");
 
   if (menu.classList.contains("show")) {
     menu.classList.remove("show");
-    menuSpace.classList.remove("show");
   }
 
   filterMenu.classList.toggle("show");
+
+  navSpace.style.height = `${filterMenu.getBoundingClientRect().height}px`;
 };
 
 const zoomImage = (e) => {
