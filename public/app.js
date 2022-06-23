@@ -33,6 +33,10 @@ const zoomedInImgCloseBtn = document.querySelector(
   "[data-zoomed-in-img-close-btn]"
 );
 
+const searchForm = document.querySelector("[data-search-form]");
+
+const searchFormSelect = document.querySelector("[data-search-form-select]");
+
 // Layout related
 const showMessage = (status, message, redirectUrl) => {
   if (document.querySelector("[data-popup]")) {
@@ -286,6 +290,14 @@ const changePassword = async function (e) {
   showMessage(status, message, redirectUrl);
 };
 
+const searchForQueryAndFilters = function (e) {
+  e.preventDefault();
+  const searchQuery = searchForm.querySelector("input").value;
+  const filter = searchForm.querySelector("select").value;
+
+  window.location.href = `/?searchquery=${searchQuery}&filter=${filter}`;
+};
+
 // Colcade
 if (document.querySelector(".grid")) {
   new Colcade(".grid", {
@@ -336,3 +348,7 @@ if (articlesGrids)
 menuBtn.addEventListener("click", openMenu);
 
 filterBtn.addEventListener("click", openFilter);
+
+searchForm.addEventListener("submit", searchForQueryAndFilters);
+
+searchFormSelect.addEventListener("change", searchForQueryAndFilters);

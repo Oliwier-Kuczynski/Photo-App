@@ -73,6 +73,7 @@ select {
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
+  cursor: pointer;
 }
 
 ul[class],

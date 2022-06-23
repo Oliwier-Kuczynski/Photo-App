@@ -1,3 +1,4 @@
+const { query } = require("express");
 const productConnection = require("../models/products");
 const userConnection = require("../models/user");
 const Product = productConnection.models.Product;
@@ -14,9 +15,18 @@ const getSpecificProduct = async (id) => {
   return specificProduct;
 };
 
-const getAllProducts = async () => {
-  const allProducts = await Product.find({});
-  return allProducts;
+///////////////////////////
+// Work on this next
+//////////////////////////
+
+const getProducts = async (searchQuery, filter) => {
+  const query = searchQuery;
+
+  if (!query) {
+    return await Product.find({});
+  }
+
+  return await Product.find({ $text: { $search: query } });
 };
 
 const getAllProductsUploadedByUser = async (req, res) => {
@@ -127,7 +137,7 @@ const deletePost = async (req, res) => {
 module.exports = {
   uploadPost,
   editPost,
-  getAllProducts,
+  getProducts,
   getAllProductsUploadedByUser,
   getSpecificProduct,
   deletePost,

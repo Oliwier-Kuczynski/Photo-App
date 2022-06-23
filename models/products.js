@@ -27,6 +27,15 @@ const ProductSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+ProductSchema.index(
+  { title: "text", description: "text", authorName: "text" },
+  {
+    name: "productsIndex",
+    weights: { title: 10, description: 7, authorName: 4 },
+    autoIndex: true,
+  }
+);
+
 connection.model("Product", ProductSchema);
 
 module.exports = connection;

@@ -4,20 +4,28 @@
       <img src="img/filter-list.svg" alt="" />
     </button>
 
-    <form>
+    <form data-search-form="">
       <div class="primary-nav__content__search-bar ai-c">
         <button aria-label="Search button" type="submit">
           <img src="img/search-icon.svg" alt="search icon" />
         </button>
-        <input type="text" />
+        <% if(!searchQuery) {%>
+        <input type="text" value="" />
+        <% } %> <% if(searchQuery) {%>
+        <input type="text" value="<%= searchQuery %>" />
+        <% } %>
       </div>
 
-      <select class="primary-nav__filter menu" data-filter-menu="">
-        <option value="popularity">Popularity</option>
-        <option value="price-ascending">Price (high to low)</option>
-        <option value="price-descending">Price (low to high)</option>
+      <select
+        class="primary-nav__filter menu"
+        data-filter-menu=""
+        data-search-form-select=""
+      >
         <option value="added-date-ascending">Added (newest)</option>
         <option value="added-date-descending">Added (oldest)</option>
+        <option value="price-ascending">Price (high to low)</option>
+        <option value="price-descending">Price (low to high)</option>
+        <option value="popularity">Popularity</option>
       </select>
     </form>
 
