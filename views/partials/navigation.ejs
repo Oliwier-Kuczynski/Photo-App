@@ -21,11 +21,11 @@
         data-filter-menu=""
         data-search-form-select=""
       >
-        <option value="added-date-ascending">Added (newest)</option>
-        <option value="added-date-descending">Added (oldest)</option>
-        <option value="price-ascending">Price (high to low)</option>
-        <option value="price-descending">Price (low to high)</option>
-        <option value="popularity">Popularity</option>
+        <option value="added-date-ascending" <%= "added-date-ascending" === filter ? "selected" : '' %>>Added (newest)</option>
+        <option value="added-date-descending" <%= "added-date-descending" === filter ? "selected" : '' %>>Added (oldest)</option>
+        <option value="price-ascending" <%= "price-ascending" === filter ? "selected" : '' %>>Price (high to low)</option>
+        <option value="price-descending" <%= "price-descending" === filter ? "selected" : '' %>>Price (low to high)</option>
+        <option value="popularity" <%= "popularity" === filter ? "selected" : '' %>>Popularity</option>
       </select>
     </form>
 

@@ -1,4 +1,5 @@
 const { query } = require("express");
+const { result, create } = require("lodash");
 const productConnection = require("../models/products");
 const userConnection = require("../models/user");
 const Product = productConnection.models.Product;
@@ -20,13 +21,27 @@ const getSpecificProduct = async (id) => {
 //////////////////////////
 
 const getProducts = async (searchQuery, filter) => {
-  const query = searchQuery;
+  if (!filter) filter = "added-date-ascending";
 
-  if (!query) {
-    return await Product.find({});
+  const filterResults = async (findParameters) => {
+    const fromTo = filter.includes("descending") ? 1 : -1;
+    // date sorting
+    if (filter.includes("added-date")) {
+      return await Product.find(findParameters).sort({ createdAt: fromTo });
+    }
+    // price sorting
+    if (filter.includes("price")) {
+      return await Product.find(findParameters).sort({ price: fromTo });
+    }
+    // popularity sorting
+    // NOT DONE YET
+  };
+
+  if (!searchQuery) {
+    return filterResults({});
   }
 
-  return await Product.find({ $text: { $search: query } });
+  return filterResults({ $text: { $search: searchQuery } });
 };
 
 const getAllProductsUploadedByUser = async (req, res) => {

@@ -4,22 +4,26 @@ const homePageGet = async (req, res) => {
   const searchQuery = req.query.searchquery || "";
   const filter = req.query.filter || "";
 
-  let products = await productsController.getProducts(searchQuery, filter);
+  try {
+    let products = await productsController.getProducts(searchQuery, filter);
 
-  if (req.isAuthenticated()) {
-    return res.render("index.ejs", {
-      authenticated: true,
+    if (req.isAuthenticated()) {
+      return res.render("index.ejs", {
+        authenticated: true,
+        products: products,
+        searchQuery,
+        filter,
+      });
+    }
+    res.render("index.ejs", {
+      authenticated: false,
       products: products,
       searchQuery,
       filter,
     });
+  } catch (err) {
+    res.status(500).send();
   }
-  res.render("index.ejs", {
-    authenticated: false,
-    products: products,
-    searchQuery,
-    filter,
-  });
 };
 
 const aboutGet = (req, res) => {
@@ -39,18 +43,20 @@ const profileGet = async (req, res) => {
   const searchQuery = req.query.searchquery || "";
   const filter = req.query.filter || "";
 
-  const allUserProducts = await productsController.getAllProductsUploadedByUser(
-    req,
-    res
-  );
+  try {
+    const allUserProducts =
+      await productsController.getAllProductsUploadedByUser(req, res);
 
-  res.render("profile.ejs", {
-    authenticated: true,
-    products: allUserProducts,
-    usersName: req.user.name,
-    searchQuery,
-    filter,
-  });
+    res.render("profile.ejs", {
+      authenticated: true,
+      products: allUserProducts,
+      usersName: req.user.name,
+      searchQuery,
+      filter,
+    });
+  } catch (err) {
+    res.status(500).send();
+  }
 };
 
 const loginGet = (req, res) => {
