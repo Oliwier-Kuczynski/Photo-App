@@ -26,7 +26,7 @@
             <img src="<%= product.imgUrl %>" alt="article photo" class="articles-container__article-img" loading="lazy">
             <h2><%= product.title %></h2>
             <p><%= product.description %> <button class="articles-container__highlight">Read more</button></p>
-            <div class="articles-container__article-info separetor"><p>Price: <%= product.price  %> &#36</p><p>Author: <%= product.authorName %> </p><p>Uploaded: <%= date %></p> <p>Resolution: 1920x1080</p></div>
+            <div class="articles-container__article-info separetor"><p>Price: <%= product.price  %> &#36</p><p>Author: <%= product.authorName %> </p><p>Uploaded: <%= date %></p> <p>Resolution: <%= product.resolution %></p></div>
             <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
           </article>
           <% }); %>

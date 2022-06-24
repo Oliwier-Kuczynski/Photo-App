@@ -1,3 +1,5 @@
+const sizeOf = require("image-size");
+
 const { query } = require("express");
 const { result, create } = require("lodash");
 const productConnection = require("../models/products");
@@ -45,7 +47,7 @@ const getProducts = async (searchQuery, filter) => {
 };
 
 const getAllProductsUploadedByUser = async (req, res) => {
-  const allProducts = await Product.find({});
+  const allProducts = await Product.find({}).sort({ createdAt: -1 });
 
   const allUserProductsIds = req.user.uploadedProducts;
 
@@ -66,12 +68,15 @@ const uploadPost = async (req, res) => {
 
     const imgUrl = imgUrlOrginal.replace("uploads", "");
 
+    const { width, height } = sizeOf(imgUrlOrginal);
+
     const newProduct = new Product({
       title,
       description,
       price,
       imgUrl,
       authorName,
+      resolution: `${width}x${height}`,
     });
 
     const product = await newProduct.save();
@@ -87,7 +92,7 @@ const uploadPost = async (req, res) => {
       redirectUrl: "/profile",
     });
   } catch (err) {
-    res.status(500).json({ status: "erro", message: "Something went wrong" });
+    res.status(500).json({ status: "error", message: "Something went wrong" });
   }
 };
 
