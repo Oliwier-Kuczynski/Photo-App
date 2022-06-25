@@ -1,7 +1,7 @@
 const sizeOf = require("image-size");
+const sharp = require("sharp");
+const path = require("path");
 
-const { query } = require("express");
-const { result, create } = require("lodash");
 const productConnection = require("../models/products");
 const userConnection = require("../models/user");
 const Product = productConnection.models.Product;
@@ -65,8 +65,21 @@ const uploadPost = async (req, res) => {
     const price = req.body.price;
     const authorName = req.user.name;
     const imgUrlOrginal = req.file.path;
+    const imgName = path.parse(req.file.filename).name;
 
-    const imgUrl = imgUrlOrginal.replace("uploads", "");
+    sharp(imgUrlOrginal)
+      .webp({ quality: 80 })
+      .resize({ width: 600 })
+      .toFile(`uploads/optimized-images/${imgName}.webp`, (err, info) => {
+        if (err) throw new Error("Sharp error");
+      });
+
+    const imgUrl = imgUrlOrginal
+      .replaceAll(String.fromCharCode(92), "/")
+      .split("/")
+      .slice(1)
+      .join("/");
+    const optimizedImgUrl = `optimized-images/${imgName}.webp`;
 
     const { width, height } = sizeOf(imgUrlOrginal);
 
@@ -75,6 +88,7 @@ const uploadPost = async (req, res) => {
       description,
       price,
       imgUrl,
+      optimizedImgUrl,
       authorName,
       resolution: `${width}x${height}`,
     });

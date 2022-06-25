@@ -23,6 +23,10 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    optimizedImgUrl: {
+      type: String,
+      required: true,
+    },
     popularityScore: {
       type: Number,
       default: 0,

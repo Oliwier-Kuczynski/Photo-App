@@ -125,7 +125,9 @@ const zoomImage = (e) => {
 
   if (!targetImg) return;
 
-  zoomedInImg.querySelector("[data-main-img]").src = targetImg.src;
+  zoomedInImg.querySelector("[data-main-img]").src =
+    targetImg.dataset.originalImgSource;
+
   zoomedInImg.classList.add("show");
 };
 
