@@ -23,9 +23,11 @@ const logoutBtn = document.querySelector("[data-logout-btn]");
 
 const closeAccountBtn = document.querySelector("[data-close-account-btn]");
 
-const deletPostBtn = document.querySelector("[data-delete-btn]");
-
 const articlesGrids = document.querySelectorAll("[data-articles-grid]");
+
+const articlesGridsUploadedByUser = document.querySelector(
+  "[data-articles-grid-uploaded-by-user]"
+);
 
 const zoomedInImg = document.querySelector("[data-zoomed-in-img]");
 
@@ -322,11 +324,6 @@ if (uploadForm) uploadForm.addEventListener("submit", uploadPost);
 
 if (editForm) editForm.addEventListener("submit", editPost);
 
-if (deletPostBtn)
-  deletPostBtn.addEventListener("click", (e) =>
-    showConfirmation(deletePost.bind(this, e))
-  );
-
 if (changePasswordForm)
   changePasswordForm.addEventListener("submit", changePassword);
 
@@ -344,6 +341,13 @@ if (articlesGrids)
   articlesGrids.forEach((articlesGrid) =>
     articlesGrid.addEventListener("click", zoomImage)
   );
+
+if (articlesGridsUploadedByUser)
+  articlesGridsUploadedByUser.addEventListener("click", (e) => {
+    if (e.target.hasAttribute("data-delete-btn")) {
+      showConfirmation(deletePost.bind(this, e));
+    }
+  });
 
 menuBtn.addEventListener("click", openMenu);
 
