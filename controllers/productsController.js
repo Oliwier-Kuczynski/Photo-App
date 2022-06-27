@@ -13,9 +13,13 @@ const belongsToUser = (user, productId) => {
 };
 
 const getSpecificProduct = async (id) => {
-  const specificProduct = await Product.findById(id);
+  try {
+    const specificProduct = await Product.findById(id);
 
-  return specificProduct;
+    return specificProduct;
+  } catch (err) {
+    throw new Error(`Can't get product`);
+  }
 };
 
 ///////////////////////////
@@ -23,39 +27,47 @@ const getSpecificProduct = async (id) => {
 //////////////////////////
 
 const getProducts = async (searchQuery, filter) => {
-  if (!filter) filter = "added-date-ascending";
+  try {
+    if (!filter) filter = "added-date-ascending";
 
-  const filterResults = async (findParameters) => {
-    const fromTo = filter.includes("descending") ? 1 : -1;
-    // date sorting
-    if (filter.includes("added-date")) {
-      return await Product.find(findParameters).sort({ createdAt: fromTo });
-    }
-    // price sorting
-    if (filter.includes("price")) {
-      return await Product.find(findParameters).sort({ price: fromTo });
-    }
-    // popularity sorting
-    // NOT DONE YET
-  };
+    const filterResults = async (findParameters) => {
+      const fromTo = filter.includes("descending") ? 1 : -1;
+      // date sorting
+      if (filter.includes("added-date")) {
+        return await Product.find(findParameters).sort({ createdAt: fromTo });
+      }
+      // price sorting
+      if (filter.includes("price")) {
+        return await Product.find(findParameters).sort({ price: fromTo });
+      }
+      // popularity sorting
+      // NOT DONE YET
+    };
 
-  if (!searchQuery) {
-    return filterResults({});
+    if (!searchQuery) {
+      return filterResults({});
+    }
+
+    return filterResults({ $text: { $search: searchQuery } });
+  } catch (err) {
+    throw new Error(`Can't get products`);
   }
-
-  return filterResults({ $text: { $search: searchQuery } });
 };
 
 const getAllProductsUploadedByUser = async (req, res) => {
-  const allProducts = await Product.find({}).sort({ createdAt: -1 });
+  try {
+    const allProducts = await Product.find({}).sort({ createdAt: -1 });
 
-  const allUserProductsIds = req.user.uploadedProducts;
+    const allUserProductsIds = req.user.uploadedProducts;
 
-  const allUserProducts = allProducts.filter((product) =>
-    allUserProductsIds.includes(product._id)
-  );
+    const allUserProducts = allProducts.filter((product) =>
+      allUserProductsIds.includes(product._id)
+    );
 
-  return allUserProducts;
+    return allUserProducts;
+  } catch (err) {
+    throw new Error(`Can't get products`);
+  }
 };
 
 const uploadPost = async (req, res) => {

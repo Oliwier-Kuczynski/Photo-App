@@ -28,6 +28,12 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: "",
     },
+    verificationCode: {
+      type: Number,
+    },
+    verificationCodeExpiration: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );

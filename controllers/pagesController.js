@@ -96,6 +96,19 @@ const changePasswordGet = (req, res) => {
   });
 };
 
+const resetPasswordGet = (req, res) => {
+  const searchQuery = req.query.searchquery || "";
+  const filter = req.query.filter || "";
+
+  if (req.isAuthenticated()) return res.redirect("/");
+
+  res.render("reset-password.ejs", {
+    authenticated: true,
+    searchQuery,
+    filter,
+  });
+};
+
 const uploadGet = (req, res) => {
   const searchQuery = req.query.searchquery || "";
   const filter = req.query.filter || "";
@@ -130,4 +143,5 @@ module.exports = {
   uploadGet,
   changePasswordGet,
   editGet,
+  resetPasswordGet,
 };

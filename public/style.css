@@ -193,6 +193,8 @@ h2,
   padding: 0.4rem 1.5rem;
 } */
 
+/* Chechkout Button */
+
 .checkout-btn {
   position: fixed;
   bottom: 1rem;
@@ -215,6 +217,8 @@ h2,
 .checkout-btn__left-column {
   gap: var(--spacer);
 }
+
+/* Main Form */
 
 .main-form {
   --gap: 1.875rem;
@@ -246,6 +250,20 @@ textarea {
   margin-inline: auto;
 }
 
+.verification-code-field input {
+  flex: 1;
+}
+
+.verification-code-field button {
+  width: auto;
+  margin: 0;
+  padding: 0 1rem;
+  border-radius: var(--br-100);
+  min-width: 69.75px;
+}
+
+/* Menu */
+
 .menu {
   width: 100%;
   max-width: 20rem;
@@ -258,6 +276,8 @@ textarea {
   text-align: center;
 }
 
+/* Popup */
+
 .pop-up {
   position: fixed;
   top: 0;
@@ -267,7 +287,7 @@ textarea {
   width: max-content;
   max-width: calc(100vw - 2rem);
   padding: 1rem 2.5rem;
-  z-index: 1000;
+  z-index: 9999;
   overflow-x: hidden;
   background-color: var(--white);
   color: var(--primary-color-800);
@@ -288,6 +308,8 @@ textarea {
   background-color: var(--status-indicator, transparent);
 }
 
+/* Confirmation Popup */
+
 .confirmation-pop-up {
   display: none;
   position: fixed;
@@ -298,7 +320,7 @@ textarea {
   width: max-content;
   max-width: calc(100vw - 2rem);
   padding: 1rem 2.5rem;
-  z-index: 1000;
+  z-index: 9999;
   background-color: var(--white);
   font-weight: var(--fw-500);
   color: var(--primary-color-800);
@@ -313,6 +335,8 @@ textarea {
 .confirmation-pop-up button {
   min-width: 5rem;
 }
+
+/* Zoomed In Image */
 
 .zoomed-in-img {
   display: none;

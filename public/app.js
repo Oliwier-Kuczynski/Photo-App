@@ -15,6 +15,8 @@ const changePasswordForm = document.querySelector(
   "[data-change-password-form]"
 );
 
+const resetPasswordForm = document.querySelector("[data-reset-password-form]");
+
 const menuBtn = document.querySelector("[data-nav-menu-btn]");
 
 const filterBtn = document.querySelector("[data-filter-btn]");
@@ -22,6 +24,10 @@ const filterBtn = document.querySelector("[data-filter-btn]");
 const logoutBtn = document.querySelector("[data-logout-btn]");
 
 const closeAccountBtn = document.querySelector("[data-close-account-btn]");
+
+const sendVerificationCodeBtn = document.querySelector(
+  "[data-send-verification-code-btn]"
+);
 
 const articlesGrids = document.querySelectorAll("[data-articles-grid]");
 
@@ -140,7 +146,7 @@ const unZoomImage = () => {
 const register = async function (e) {
   e.preventDefault();
   const name = registerForm.querySelector("#name").value;
-  const username = registerForm.querySelector("#email").value;
+  const username = registerForm.querySelector("#email").value.toLowerCase();
   const password = registerForm.querySelector("#password").value;
   const agreed = registerForm.querySelector("#agreed").checked;
 
@@ -166,7 +172,7 @@ const register = async function (e) {
 
 const login = async function (e) {
   e.preventDefault();
-  const username = loginForm.querySelector("#email").value;
+  const username = loginForm.querySelector("#email").value.toLowerCase();
   const password = loginForm.querySelector("#password").value;
 
   const response = await fetch("/login", {
@@ -277,7 +283,7 @@ const changePassword = async function (e) {
   const confirmPassword = document.querySelector("#confirm-password").value;
 
   if (newPassword !== confirmPassword) {
-    showMessage("error", "Password does not match");
+    showMessage("error", "Passwords don't match");
     return;
   }
 
@@ -292,6 +298,74 @@ const changePassword = async function (e) {
   const { status, message, redirectUrl } = data;
 
   showMessage(status, message, redirectUrl);
+};
+
+const resetPassword = async function (e) {
+  e.preventDefault();
+
+  const username = document.querySelector("#email").value.toLowerCase();
+  const password = document.querySelector("#new-password").value;
+  const code = document.querySelector("#verification-code").value;
+
+  const response = await fetch("reset-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username,
+      password,
+      code,
+    }),
+  });
+
+  const data = await response.json();
+
+  const { status, message, redirectUrl } = data;
+
+  showMessage(status, message, redirectUrl);
+};
+
+const sendVerificationCode = async function (e) {
+  e.preventDefault();
+
+  const username = document.querySelector("#email").value.toLowerCase();
+
+  if (!username) return showMessage("error", "Email field is empty");
+
+  const response = await fetch("send-verification-code", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username,
+    }),
+  });
+
+  const data = await response.json();
+
+  const { status, message } = data;
+
+  showMessage(status, message);
+
+  if (status !== "ok") return;
+
+  let secondsLeft = 60;
+
+  sendVerificationCodeBtn.style.backgroundColor = "#474747";
+  sendVerificationCodeBtn.style.pointerEvents = "none";
+  sendVerificationCodeBtn.textContent = "60";
+
+  const verificationCountdown = setInterval(() => {
+    secondsLeft--;
+
+    sendVerificationCodeBtn.textContent = secondsLeft;
+
+    if (secondsLeft === 0) {
+      clearInterval(verificationCountdown);
+
+      sendVerificationCodeBtn.style.backgroundColor = "#3c9c1b";
+      sendVerificationCodeBtn.style.pointerEvents = "all";
+      sendVerificationCodeBtn.textContent = "Send";
+    }
+  }, 1000);
 };
 
 const searchForQueryAndFilters = function (e) {
@@ -329,6 +403,9 @@ if (editForm) editForm.addEventListener("submit", editPost);
 if (changePasswordForm)
   changePasswordForm.addEventListener("submit", changePassword);
 
+if (resetPasswordForm)
+  resetPasswordForm.addEventListener("submit", resetPassword);
+
 if (logoutBtn) logoutBtn.addEventListener("click", logout);
 
 if (zoomedInImgCloseBtn)
@@ -338,6 +415,9 @@ if (closeAccountBtn)
   closeAccountBtn.addEventListener("click", () =>
     showConfirmation(deleteAccount)
   );
+
+if (sendVerificationCodeBtn)
+  sendVerificationCodeBtn.addEventListener("click", sendVerificationCode);
 
 if (articlesGrids)
   articlesGrids.forEach((articlesGrid) =>
