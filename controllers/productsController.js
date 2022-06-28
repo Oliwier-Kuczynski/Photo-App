@@ -12,6 +12,30 @@ const belongsToUser = (user, productId) => {
   return false;
 };
 
+// This utility optimizes img gets it's resolution and changes format of a original url
+const imgUtility = (imgUrlOrginal, imgName) => {
+  sharp(imgUrlOrginal)
+    .webp({ quality: 80 })
+    .resize({ width: 600 })
+    .toFile(`uploads/optimized-images/${imgName}.webp`, (err, info) => {
+      if (err) throw new Error("Sharp error");
+    });
+
+  const imgUrl = imgUrlOrginal
+    .replaceAll(String.fromCharCode(92), "/")
+    .split("/")
+    .slice(1)
+    .join("/");
+
+  const optimizedImgUrl = `optimized-images/${imgName}.webp`;
+
+  const { width, height } = sizeOf(imgUrlOrginal);
+
+  const resolution = `${width}x${height}`;
+
+  return { imgUrl, optimizedImgUrl, resolution };
+};
+
 const getSpecificProduct = async (id) => {
   try {
     const specificProduct = await Product.findById(id);
@@ -76,24 +100,14 @@ const uploadPost = async (req, res) => {
     const description = req.body.description;
     const price = req.body.price;
     const authorName = req.user.name;
+    const authorId = req.user._id;
     const imgUrlOrginal = req.file.path;
     const imgName = path.parse(req.file.filename).name;
 
-    sharp(imgUrlOrginal)
-      .webp({ quality: 80 })
-      .resize({ width: 600 })
-      .toFile(`uploads/optimized-images/${imgName}.webp`, (err, info) => {
-        if (err) throw new Error("Sharp error");
-      });
-
-    const imgUrl = imgUrlOrginal
-      .replaceAll(String.fromCharCode(92), "/")
-      .split("/")
-      .slice(1)
-      .join("/");
-    const optimizedImgUrl = `optimized-images/${imgName}.webp`;
-
-    const { width, height } = sizeOf(imgUrlOrginal);
+    const { imgUrl, optimizedImgUrl, resolution } = imgUtility(
+      imgUrlOrginal,
+      imgName
+    );
 
     const newProduct = new Product({
       title,
@@ -102,7 +116,8 @@ const uploadPost = async (req, res) => {
       imgUrl,
       optimizedImgUrl,
       authorName,
-      resolution: `${width}x${height}`,
+      authorId,
+      resolution,
     });
 
     const product = await newProduct.save();
@@ -126,14 +141,14 @@ const editPost = async (req, res) => {
   try {
     const productId = req.body.id;
     const product = await getSpecificProduct(productId);
-
     const title = req.body.title || product.title;
     const description = req.body.description || product.description;
     const price = req.body.price || product.price;
     const imgUrlOrginal = req.file?.path || product.imgUrl;
-    const authorName = product.authorName;
 
-    const imgUrl = imgUrlOrginal?.replace("uploads", "");
+    let imgUrl = product.imgUrl,
+      optimizedImgUrl = product.optimizedImgUrl,
+      resolution = product.resolution;
 
     if (!belongsToUser(req.user, productId))
       return res.status(403).json({
@@ -141,14 +156,29 @@ const editPost = async (req, res) => {
         message: "You don't have permission to do this operation",
       });
 
-    await Product.replaceOne(
+    if (req.file) {
+      const imgName = path.parse(req.file.filename).name;
+
+      const {
+        imgUrl: newImgUrl,
+        optimizedImgUrl: newOptimizedImgUrl,
+        resolution: newResolution,
+      } = imgUtility(imgUrlOrginal, imgName);
+
+      imgUrl = newImgUrl;
+      optimizedImgUrl = newOptimizedImgUrl;
+      resolution = newResolution;
+    }
+
+    await Product.updateOne(
       { _id: productId },
       {
         title,
         description,
         price,
         imgUrl,
-        authorName,
+        optimizedImgUrl,
+        resolution,
       }
     );
 
@@ -156,6 +186,7 @@ const editPost = async (req, res) => {
       .status(200)
       .json({ status: "ok", message: "Item edited", redirectUrl: "/profile" });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ status: "error", message: "Something went wrong" });
   }
 };

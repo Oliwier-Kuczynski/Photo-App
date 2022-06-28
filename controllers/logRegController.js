@@ -99,7 +99,7 @@ const registerPost = async (req, res) => {
   try {
     const { agreed, name, username } = req.body;
 
-    if (doesUserExists(username))
+    if (await doesUserExists(username))
       return res.status(409).json({
         status: "error",
         message: "User already exists in our database",

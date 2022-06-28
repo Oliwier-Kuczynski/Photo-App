@@ -19,6 +19,10 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    authorId: {
+      type: String,
+      required: true,
+    },
     imgUrl: {
       type: String,
       required: true,
