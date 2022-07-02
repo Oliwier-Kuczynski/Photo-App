@@ -134,7 +134,7 @@ const registerPost = async (req, res) => {
   }
 };
 
-const logoutGet = (req, res) => {
+const logoutPost = (req, res) => {
   req.logout();
 
   res
@@ -249,7 +249,7 @@ const resetPasswordPost = async (req, res) => {
 module.exports = {
   loginPost,
   registerPost,
-  logoutGet,
+  logoutPost,
   closeAccountPost,
   changePasswordPost,
   resetPasswordPost,

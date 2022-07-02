@@ -144,7 +144,46 @@ const unZoomImage = () => {
   zoomedInImg.classList.remove("show");
 };
 
+const showLoadMoreBtns = function () {
+  if (
+    document.querySelector("[data-articles-grid-uploaded-by-user]").children[0]
+      .children.length < 5
+  ) {
+    document.querySelector(
+      `[data-load-more-btn="uploaded-by-user"]`
+    ).style.display = "block";
+  }
+
+  if (
+    document.querySelector("[data-articles-grid-purchased-by-user]").children[0]
+      .children.length < 5
+  ) {
+    document.querySelector(
+      `[data-load-more-btn="purchased-by-user"]`
+    ).style.display = "block";
+  }
+};
+
 // Sending requsets to the backend
+const fetchData = async function (url, method, contentType, body, isMessage) {
+  const response = await fetch(url, {
+    method: method,
+    headers: {
+      "Content-Type": contentType,
+    },
+    body: body,
+  });
+
+  const data = await response.json();
+
+  if (!isMessage) return data;
+
+  const { status, message, redirectUrl } = data;
+
+  showMessage(status, message, redirectUrl);
+
+  return data;
+};
 
 const register = async function (e) {
   e.preventDefault();
@@ -156,24 +195,18 @@ const register = async function (e) {
   const password = registerForm.querySelector("#password").value;
   const agreed = registerForm.querySelector("#agreed").checked;
 
-  const response = await fetch("/register", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+  fetchData(
+    "/register",
+    "POST",
+    "application/json",
+    JSON.stringify({
       username,
       password,
       name,
       agreed,
     }),
-  });
-
-  const data = await response.json();
-
-  const { status, message, redirectUrl } = data;
-
-  showMessage(status, message, redirectUrl);
+    true
+  );
 };
 
 const login = async function (e) {
@@ -181,22 +214,16 @@ const login = async function (e) {
   const username = loginForm.querySelector("#email").value.toLowerCase().trim();
   const password = loginForm.querySelector("#password").value;
 
-  const response = await fetch("/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+  fetchData(
+    "/login",
+    "POST",
+    "application/json",
+    JSON.stringify({
       username,
       password,
     }),
-  });
-
-  const data = await response.json();
-
-  const { status, message, redirectUrl } = data;
-
-  showMessage(status, message, redirectUrl);
+    true
+  );
 };
 
 const formDataUploadEdit = async function (fetchUrl, invokingElement) {
@@ -214,16 +241,7 @@ const formDataUploadEdit = async function (fetchUrl, invokingElement) {
   formData.append("price", price);
   formData.append("image", image);
 
-  const response = await fetch(fetchUrl, {
-    method: "POST",
-    body: formData,
-  });
-
-  const data = await response.json();
-
-  const { status, message, redirectUrl } = data;
-
-  showMessage(status, message, redirectUrl);
+  fetchData(fetchUrl, "POST", "multipart/form-data", formData, true);
 };
 
 const uploadPost = function (e) {
@@ -241,45 +259,25 @@ const editPost = function (e) {
 const deletePost = async function (e) {
   const id = e.target.closest(".grid-item").id;
 
-  const response = await fetch("/delete", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
+  fetchData(
+    "/delete",
+    "POST",
+    "application/json",
+    JSON.stringify({
       id,
     }),
-  });
-
-  const data = await response.json();
-
-  const { status, message, redirectUrl } = data;
-
-  showMessage(status, message, redirectUrl);
+    true
+  );
 };
 
 const logout = async function (e) {
   e.preventDefault();
 
-  const response = await fetch("/logout", {
-    method: "GET",
-  });
-
-  const data = await response.json();
-
-  const { status, message, redirectUrl } = data;
-
-  showMessage(status, message, redirectUrl);
+  fetchData("/logout", "POST", "application/xml", undefined, true);
 };
 
 const deleteAccount = async () => {
-  const response = await fetch("close-account", {
-    method: "POST",
-  });
-
-  const data = await response.json();
-
-  const { status, message, redirectUrl } = data;
-
-  showMessage(status, message, redirectUrl);
+  fetchData("/close-account", "POST", "application/xml", undefined, true);
 };
 
 const changePassword = async function (e) {
@@ -293,17 +291,13 @@ const changePassword = async function (e) {
     return;
   }
 
-  const response = await fetch("change-password", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ oldPassword, newPassword }),
-  });
-
-  const data = await response.json();
-
-  const { status, message, redirectUrl } = data;
-
-  showMessage(status, message, redirectUrl);
+  fetchData(
+    "/change-password",
+    "POST",
+    "application/json",
+    JSON.stringify({ oldPassword, newPassword }),
+    true
+  );
 };
 
 const resetPassword = async function (e) {
@@ -313,21 +307,13 @@ const resetPassword = async function (e) {
   const password = document.querySelector("#new-password").value;
   const code = document.querySelector("#verification-code").value;
 
-  const response = await fetch("reset-password", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username,
-      password,
-      code,
-    }),
-  });
-
-  const data = await response.json();
-
-  const { status, message, redirectUrl } = data;
-
-  showMessage(status, message, redirectUrl);
+  fetchData(
+    "/reset-password",
+    "POST",
+    "application/json",
+    JSON.stringify({ username, password, code }),
+    true
+  );
 };
 
 const sendVerificationCode = async function (e) {
@@ -337,19 +323,13 @@ const sendVerificationCode = async function (e) {
 
   if (!username) return showMessage("error", "Email field is empty");
 
-  const response = await fetch("send-verification-code", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username,
-    }),
-  });
-
-  const data = await response.json();
-
-  const { status, message } = data;
-
-  showMessage(status, message);
+  const { status } = await fetchData(
+    "/send-verification-code",
+    "POST",
+    "application/json",
+    JSON.stringify({ username }),
+    true
+  );
 
   if (status !== "ok") return;
 
@@ -390,18 +370,15 @@ const loadMore = async function (
   const searchQuery = urlParams.get("searchquery");
   const filter = urlParams.get("filter");
 
-  const response = await fetch("load-more", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      startIndex,
-      searchQuery,
-      filter,
-      callbackOption,
-    }),
-  });
+  const products = await fetchData(
+    "/load-more",
+    "POST",
+    "application/json",
+    JSON.stringify({ startIndex, searchQuery, filter, callbackOption }),
+    false
+  );
 
-  const products = await response.json();
+  console.log(products);
 
   if (products.length === 0 && interval) return clearInterval(interval);
 
@@ -431,7 +408,9 @@ const loadMore = async function (
 
     const item = document.createElement("article");
 
-    item.className = `ver-spacer ${colcadeItem.options.items.slice(1)}`;
+    item.className = `ver-spacer grid-item ${colcadeItem.options.items.slice(
+      1
+    )}`;
     item.setAttribute("id", product._id);
     item.insertAdjacentHTML("beforeend", htmlString);
 
@@ -494,26 +473,6 @@ const loadMoreByButton = function () {
               </div>`;
 
     loadMore(colcUploadedByUser, additionalHtml, btnDataset);
-  }
-};
-
-const showLoadMoreBtns = function () {
-  if (
-    document.querySelector("[data-articles-grid-uploaded-by-user]").children[0]
-      .children.length < 5
-  ) {
-    document.querySelector(
-      `[data-load-more-btn="uploaded-by-user"]`
-    ).style.display = "none";
-  }
-
-  if (
-    document.querySelector("[data-articles-grid-purchased-by-user]").children[0]
-      .children.length < 5
-  ) {
-    document.querySelector(
-      `[data-load-more-btn="purchased-by-user"]`
-    ).style.display = "none";
   }
 };
 
@@ -603,4 +562,4 @@ document.addEventListener("DOMContentLoaded", reloadColcade);
 
 // Invoicing Functions
 document.body.dataset.scroll && infiniteScroll();
-showLoadMoreBtns();
+document.body.hasAttribute("data-profile") && showLoadMoreBtns();

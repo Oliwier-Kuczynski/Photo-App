@@ -3,7 +3,7 @@
   <head>
     <%- include('partials/head') %>
   </head>
-  <body>
+  <body data-profile="">
     <div class="container">
       <!-- Navigation -->
       <%- include('partials/navigation')%>
@@ -26,7 +26,7 @@
           <% products.forEach(product => { %>
             <% const date = product.createdAt.toISOString().split('T')[0].replaceAll('-', '/'); %> 
 
-            <article class="ver-spacer grid-item-uploaded-by-user" id="<%= product._id %>">
+            <article class="ver-spacer grid-item grid-item-uploaded-by-user" id="<%= product._id %>">
               <img src="<%= product.optimizedImgUrl %>" data-original-img-source="<%= product.imgUrl %> " alt="article photo" class="articles-container__article-img" loading="lazy">
               <h2><%= product.title %></h2>
               <p><%= product.description %> <button class="articles-container__highlight">Read more</button></p>

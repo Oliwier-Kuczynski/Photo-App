@@ -18,6 +18,6 @@ router.post(
   logRegController.sendVerifictaionCodePost
 );
 
-router.get("/logout", logRegController.logoutGet);
+router.post("/logout", logRegController.logoutPost);
 
 module.exports = router;
