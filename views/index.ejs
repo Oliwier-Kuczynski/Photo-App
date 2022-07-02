@@ -3,7 +3,7 @@
   <head>
     <%- include('partials/head') %>
   </head>
-  <body>
+  <body data-scroll="true">
     <div class="container">
       <!-- Navigation -->
       <%- include('partials/navigation')%>
@@ -23,11 +23,11 @@
             <% const date = product.createdAt.toISOString().split('T')[0].replaceAll('-', '/'); %> 
 
             <article class="ver-spacer grid-item" id="<% product._id %>">
-            <img src="<%= product.optimizedImgUrl %>" data-original-img-source="<%= product.imgUrl %> " alt="article photo" class="articles-container__article-img" loading="lazy">
-            <h2><%= product.title %></h2>
-            <p><%= product.description %> <button class="articles-container__highlight">Read more</button></p>
-            <div class="articles-container__article-info separetor"><p>Price: <%= product.price  %> &#36</p><p>Author: <%= product.authorName %> </p><p>Uploaded: <%= date %></p> <p>Resolution: <%= product.resolution %></p></div>
-            <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
+              <img src="<%= product.optimizedImgUrl %>" data-original-img-source="<%= product.imgUrl %> " alt="article photo" class="articles-container__article-img">
+              <h2><%= product.title %></h2>
+              <p><%= product.description %> <button class="articles-container__highlight">Read more</button></p>
+              <div class="articles-container__article-info separetor"><p>Price: <%= product.price  %> &#36</p><p>Author: <%= product.authorName %> </p><p>Uploaded: <%= date %></p> <p>Resolution: <%= product.resolution %></p></div>
+              <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
           </article>
           <% }); %>
         </div>

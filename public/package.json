@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "colcade": "^0.2.0"
+    "colcade": "^0.2.0",
+    "imagesloaded": "^5.0.0"
   }
 }

@@ -18,15 +18,15 @@
         <h3 class="profile-section-indicetor gray-accent ">Your Photos</h3>
         <!-- Articles -->
         <!-- prettier-ignore -->
-        <div class="articles-container grid" data-articles-grid="" data-articles-grid-uploaded-by-user="">
-          <div class="grid-col grid-col--1"></div>
-          <div class="grid-col grid-col--2"></div>
-          <div class="grid-col grid-col--3"></div>
+        <div class="articles-container grid-uploaded-by-user" data-articles-grid="" data-articles-grid-uploaded-by-user="">
+          <div class="grid-col-uploaded-by-user grid-col--1"></div>
+          <div class="grid-col-uploaded-by-user grid-col--2"></div>
+          <div class="grid-col-uploaded-by-user grid-col--3"></div>
 
           <% products.forEach(product => { %>
             <% const date = product.createdAt.toISOString().split('T')[0].replaceAll('-', '/'); %> 
 
-            <article class="ver-spacer grid-item" id="<%= product._id %>">
+            <article class="ver-spacer grid-item-uploaded-by-user" id="<%= product._id %>">
               <img src="<%= product.optimizedImgUrl %>" data-original-img-source="<%= product.imgUrl %> " alt="article photo" class="articles-container__article-img" loading="lazy">
               <h2><%= product.title %></h2>
               <p><%= product.description %> <button class="articles-container__highlight">Read more</button></p>
@@ -39,14 +39,16 @@
           <% }); %>
         </div>
 
+        <button class="btn-dark load-more-btn" data-load-more-btn="uploaded-by-user">More</button>
+
         <h3 class="profile-section-indicetor gray-accent">Your Purchases</h3>
 
-        <div class="articles-container grid-additional" data-articles-grid="" >
-          <div class="grid-col-additional grid-col--1"></div>
-          <div class="grid-col-additional grid-col--2"></div>
-          <div class="grid-col-additional grid-col--3"></div>
+        <div class="articles-container grid-purchased-by-user" data-articles-grid="" >
+          <div class="grid-col-purchased-by-user grid-col--1"></div>
+          <div class="grid-col-purchased-by-user grid-col--2"></div>
+          <div class="grid-col-purchased-by-user grid-col--3"></div>
 
-          <article class="ver-spacer grid-item-additional">
+          <article class="ver-spacer grid-item-purchased-by-user">
             <img src="img/IMG_20200922_153646.jpg" alt="article photo" class="articles-container__article-img" loading="lazy">
             <h2>Central Park New York City</h2>
             <p>is an urban park in New York City, between the Upper West and Upper East Sides of Manhattan. It is the fifth largest park in the city, covering 843 acres (341 ha) <button class="articles-container__highlight">Read more</button></p>
@@ -54,7 +56,7 @@
             <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
           </article>
 
-          <article class="ver-spacer grid-item-additional">
+          <article class="ver-spacer grid-item-purchased-by-user">
             <img src="img/eiffel-tower.jpg" alt="article photo" class="articles-container__article-img" loading="lazy">
             <h2>Eiffel Tower Paris</h2>
             <p>is an urban park in New York City, between the Upper West and Upper East Sides of Manhattan. It is the fifth largest park in the city, covering 843 acres (341 ha) <button class="articles-container__highlight">Read more</button></p>
@@ -62,7 +64,7 @@
             <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
           </article>
 
-          <article class="ver-spacer grid-item-additional">
+          <article class="ver-spacer grid-item-purchased-by-user">
             <img src="img/IMG_20200922_153646.jpg" alt="article photo" class="articles-container__article-img" loading="lazy">
             <h2>Central Park New York City</h2>
             <p>is an urb Upper West and  ha) <button class="articles-container__highlight">Read more</button></p>

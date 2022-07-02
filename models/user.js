@@ -22,11 +22,9 @@ const UserSchema = new mongoose.Schema(
     },
     uploadedProducts: {
       type: Array,
-      default: "",
     },
     purchasedProducts: {
       type: Array,
-      default: "",
     },
     verificationCode: {
       type: Number,

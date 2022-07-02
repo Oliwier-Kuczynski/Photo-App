@@ -36,6 +36,36 @@ const imgUtility = (imgUrlOrginal, imgName) => {
   return { imgUrl, optimizedImgUrl, resolution };
 };
 
+///////////////////////////
+// Work on this next
+//////////////////////////
+
+const documentsLimit = 5;
+
+const filterResults = async (filter, findParameters, startIndex = 0) => {
+  try {
+    const fromTo = filter.includes("descending") ? 1 : -1;
+    // date sorting
+    if (filter.includes("added-date")) {
+      return await Product.find(findParameters)
+        .sort({ createdAt: fromTo })
+        .skip(startIndex)
+        .limit(documentsLimit);
+    }
+    // price sorting
+    if (filter.includes("price")) {
+      return await Product.find(findParameters)
+        .sort({ price: fromTo })
+        .skip(startIndex)
+        .limit(documentsLimit);
+    }
+    // popularity sorting
+    // NOT DONE YET
+  } catch (err) {
+    throw new Error(`Can't get products`);
+  }
+};
+
 const getSpecificProduct = async (id) => {
   try {
     const specificProduct = await Product.findById(id);
@@ -46,47 +76,34 @@ const getSpecificProduct = async (id) => {
   }
 };
 
-///////////////////////////
-// Work on this next
-//////////////////////////
-
-const getProducts = async (searchQuery, filter) => {
+const getProducts = (searchQuery, filter, startIndex) => {
   try {
     if (!filter) filter = "added-date-ascending";
 
-    const filterResults = async (findParameters) => {
-      const fromTo = filter.includes("descending") ? 1 : -1;
-      // date sorting
-      if (filter.includes("added-date")) {
-        return await Product.find(findParameters).sort({ createdAt: fromTo });
-      }
-      // price sorting
-      if (filter.includes("price")) {
-        return await Product.find(findParameters).sort({ price: fromTo });
-      }
-      // popularity sorting
-      // NOT DONE YET
-    };
-
     if (!searchQuery) {
-      return filterResults({});
+      return filterResults(filter, {}, startIndex);
     }
 
-    return filterResults({ $text: { $search: searchQuery } });
+    return filterResults(
+      filter,
+      { $text: { $search: searchQuery } },
+      startIndex
+    );
   } catch (err) {
     throw new Error(`Can't get products`);
   }
 };
 
-const getAllProductsUploadedByUser = async (req, res) => {
+const getAllProductsUploadedByUser = async (req, res, next, startIndex) => {
   try {
-    const allProducts = await Product.find({}).sort({ createdAt: -1 });
-
     const allUserProductsIds = req.user.uploadedProducts;
 
-    const allUserProducts = allProducts.filter((product) =>
-      allUserProductsIds.includes(product._id)
-    );
+    const allUserProducts = await Product.find({
+      _id: { $in: allUserProductsIds },
+    })
+      .sort({ createdAt: -1 })
+      .skip(startIndex)
+      .limit(documentsLimit);
 
     return allUserProducts;
   } catch (err) {
@@ -186,7 +203,6 @@ const editPost = async (req, res) => {
       .status(200)
       .json({ status: "ok", message: "Item edited", redirectUrl: "/profile" });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ status: "error", message: "Something went wrong" });
   }
 };
@@ -211,6 +227,32 @@ const deletePost = async (req, res) => {
   }
 };
 
+const loadMorePost = async (req, res, next) => {
+  try {
+    const startIndex = req.body.startIndex;
+    const searchQuery = req.body.searchquery;
+    const filter = req.body.filter;
+    const callbackOption = req.body.callbackOption;
+
+    if (callbackOption === "all") {
+      const products = await getProducts(searchQuery, filter, startIndex);
+      res.status(200).json(products);
+    }
+
+    if (callbackOption === "uploaded-by-user") {
+      const products = await getAllProductsUploadedByUser(
+        req,
+        res,
+        next,
+        startIndex
+      );
+      res.status(200).json(products);
+    }
+  } catch (err) {
+    res.status(500).send();
+  }
+};
+
 module.exports = {
   uploadPost,
   editPost,
@@ -218,4 +260,5 @@ module.exports = {
   getAllProductsUploadedByUser,
   getSpecificProduct,
   deletePost,
+  loadMorePost,
 };

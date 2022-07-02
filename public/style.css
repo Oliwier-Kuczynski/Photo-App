@@ -187,11 +187,12 @@ h2,
 }
 
 /* Components */
-/* .load-more-btn {
+/* Load More Button */
+.load-more-btn {
   display: block;
   margin: 3.5rem auto;
   padding: 0.4rem 1.5rem;
-} */
+}
 
 /* Chechkout Button */
 
@@ -478,18 +479,18 @@ textarea {
   flex: 1;
 }
 
-.grid-col > * + * {
+[class*="grid-col"] > * + * {
   margin-top: calc(var(--spacer) * 2);
 }
 
-.grid-col--1,
-.grid-col--2 {
+.grid-col--2,
+.grid-col--3 {
   display: none;
 }
 
-@media screen and (min-width: 40rem) {
-  .grid-col--1,
-  .grid-col--2 {
+@media (min-width: 40rem) {
+  .grid-col--2,
+  .grid-col--3 {
     display: block;
   }
 }

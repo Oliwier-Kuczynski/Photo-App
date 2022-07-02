@@ -1,5 +1,6 @@
 "use strict";
 
+import * as imagesloaded from "./node_modules/imagesloaded/imagesloaded.pkgd.min.js";
 import * as colcade from "./node_modules/colcade/colcade.js";
 
 // Selections
@@ -40,6 +41,8 @@ const zoomedInImg = document.querySelector("[data-zoomed-in-img]");
 const zoomedInImgCloseBtn = document.querySelector(
   "[data-zoomed-in-img-close-btn]"
 );
+
+const loadMoreBtns = document.querySelectorAll("[data-load-more-btn]");
 
 const searchForm = document.querySelector("[data-search-form]");
 
@@ -146,7 +149,10 @@ const unZoomImage = () => {
 const register = async function (e) {
   e.preventDefault();
   const name = registerForm.querySelector("#name").value;
-  const username = registerForm.querySelector("#email").value.toLowerCase();
+  const username = registerForm
+    .querySelector("#email")
+    .value.toLowerCase()
+    .trim();
   const password = registerForm.querySelector("#password").value;
   const agreed = registerForm.querySelector("#agreed").checked;
 
@@ -172,7 +178,7 @@ const register = async function (e) {
 
 const login = async function (e) {
   e.preventDefault();
-  const username = loginForm.querySelector("#email").value.toLowerCase();
+  const username = loginForm.querySelector("#email").value.toLowerCase().trim();
   const password = loginForm.querySelector("#password").value;
 
   const response = await fetch("/login", {
@@ -303,7 +309,7 @@ const changePassword = async function (e) {
 const resetPassword = async function (e) {
   e.preventDefault();
 
-  const username = document.querySelector("#email").value.toLowerCase();
+  const username = document.querySelector("#email").value.toLowerCase().trim();
   const password = document.querySelector("#new-password").value;
   const code = document.querySelector("#verification-code").value;
 
@@ -327,7 +333,7 @@ const resetPassword = async function (e) {
 const sendVerificationCode = async function (e) {
   e.preventDefault();
 
-  const username = document.querySelector("#email").value.toLowerCase();
+  const username = document.querySelector("#email").value.toLowerCase().trim();
 
   if (!username) return showMessage("error", "Email field is empty");
 
@@ -368,63 +374,194 @@ const sendVerificationCode = async function (e) {
   }, 1000);
 };
 
+let colc, colcUploadedByUser, colcPurchasedByUser;
+let searchQuery, filter;
+let startIndex = 0;
+
+const loadMore = async function (
+  colcadeItem,
+  additionalHtml,
+  callbackOption,
+  interval
+) {
+  startIndex += 5;
+  const scrollCordsY = window.scrollY;
+
+  const response = await fetch("load-more", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      startIndex,
+      searchQuery,
+      filter,
+      callbackOption,
+    }),
+  });
+
+  const products = await response.json();
+
+  if (products.length === 0 && interval) return clearInterval(interval);
+
+  if (products.length === 0) {
+    const moreBtn = colcadeItem.element.parentElement.querySelector(
+      "[data-load-more-btn]"
+    );
+    moreBtn.textContent = "End";
+    moreBtn.style.pointerEvents = "none";
+  }
+
+  let itemsToAppend = [];
+
+  products.forEach((product) => {
+    const date = new Date(product.createdAt)
+      .toISOString()
+      .split("T")[0]
+      .replaceAll("-", "/");
+
+    const htmlString = `
+      <img src="${product.optimizedImgUrl}" data-original-img-source="${product.imgUrl}" alt="article photo" class="articles-container__article-img">
+      <h2>${product.title}</h2>
+      <p>${product.description} <button class="articles-container__highlight">Read more</button></p>
+      <div class="articles-container__article-info separetor"><p>Price: ${product.price} &#36</p><p>Author: ${product.authorName} </p><p>Uploaded: ${date}</p> <p>Resolution: ${product.resolution}</p></div>
+      ${additionalHtml}
+      `;
+
+    const item = document.createElement("article");
+
+    item.className = `ver-spacer ${colcadeItem.options.items.slice(1)}`;
+    item.setAttribute("id", product._id);
+    item.insertAdjacentHTML("beforeend", htmlString);
+
+    itemsToAppend.push(item);
+  });
+
+  colcadeItem.append(itemsToAppend);
+
+  imagesLoaded(colcadeItem.element, function () {
+    reloadColcade();
+    window.scrollTo(0, scrollCordsY);
+  });
+};
+
 const searchForQueryAndFilters = function (e) {
   e.preventDefault();
-  const searchQuery = searchForm.querySelector("input").value;
-  const filter = searchForm.querySelector("select").value;
+  searchQuery = searchForm.querySelector("input").value;
+  filter = searchForm.querySelector("select").value;
 
   window.location.href = `/?searchquery=${searchQuery}&filter=${filter}`;
 };
 
+const infiniteScroll = function () {
+  let scrolling = false;
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      scrolling = true;
+    },
+    { passive: true }
+  );
+
+  const scrollInterval = setInterval(() => {
+    if (scrolling) {
+      scrolling = false;
+
+      const windowHeightPlusYOffset = window.scrollY + window.innerHeight;
+      const documentHeigth = Math.trunc(
+        document.documentElement.getBoundingClientRect().height
+      );
+
+      if (windowHeightPlusYOffset >= documentHeigth - 100) {
+        const additionalHtml =
+          '<button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>';
+
+        loadMore(colc, additionalHtml, "all", scrollInterval);
+      }
+    }
+  }, 300);
+};
+
+const loadMoreByButton = function () {
+  const btnDataset = this.dataset.loadMoreBtn;
+
+  if (btnDataset === "uploaded-by-user") {
+    const additionalHtml = `<div class="separetor">
+                <a href="edit?id=<%= product._id %>" class="btn-gray articles-container__button ai-c" data-edit-btn="">Edit <img src="img/edit.svg" alt="edit"></a>
+                <button class="btn-gray articles-container__button ai-c" data-delete-btn="">Delete <img src="img/edit.svg" alt="delete"></button>
+              </div>`;
+
+    loadMore(colcUploadedByUser, additionalHtml, btnDataset);
+  }
+};
+
 // Colcade
+
 if (document.querySelector(".grid")) {
-  new Colcade(".grid", {
+  colc = new Colcade(".grid", {
     columns: ".grid-col",
     items: ".grid-item",
   });
 }
 
-if (document.querySelector(".grid-additional")) {
-  new Colcade(".grid-additional", {
-    columns: ".grid-col-additional",
-    items: ".grid-item-additional",
+if (document.querySelector(".grid-uploaded-by-user")) {
+  colcUploadedByUser = new Colcade(".grid-uploaded-by-user", {
+    columns: ".grid-col-uploaded-by-user",
+    items: ".grid-item-uploaded-by-user",
   });
 }
 
+if (document.querySelector(".grid-purchased-by-user")) {
+  colcPurchasedByUser = new Colcade(".grid-purchased-by-user", {
+    columns: ".grid-col-purchased-by-user",
+    items: ".grid-item-purchased-by-user",
+  });
+}
+
+const reloadColcade = function () {
+  colc && colc.layout();
+  colcUploadedByUser && colcUploadedByUser.layout();
+  colcPurchasedByUser && colcPurchasedByUser.layout();
+};
+
 // Eventlistners
-if (registerForm) registerForm.addEventListener("submit", register);
+registerForm && registerForm.addEventListener("submit", register);
 
-if (loginForm) loginForm.addEventListener("submit", login);
+loginForm && loginForm.addEventListener("submit", login);
 
-if (uploadForm) uploadForm.addEventListener("submit", uploadPost);
+uploadForm && uploadForm.addEventListener("submit", uploadPost);
 
-if (editForm) editForm.addEventListener("submit", editPost);
+editForm && editForm.addEventListener("submit", editPost);
 
-if (changePasswordForm)
+changePasswordForm &&
   changePasswordForm.addEventListener("submit", changePassword);
 
-if (resetPasswordForm)
+resetPasswordForm &&
   resetPasswordForm.addEventListener("submit", resetPassword);
 
-if (logoutBtn) logoutBtn.addEventListener("click", logout);
+logoutBtn && logoutBtn.addEventListener("click", logout);
 
-if (zoomedInImgCloseBtn)
+zoomedInImgCloseBtn &&
   zoomedInImgCloseBtn.addEventListener("click", unZoomImage);
 
-if (closeAccountBtn)
+closeAccountBtn &&
   closeAccountBtn.addEventListener("click", () =>
     showConfirmation(deleteAccount)
   );
 
-if (sendVerificationCodeBtn)
+sendVerificationCodeBtn &&
   sendVerificationCodeBtn.addEventListener("click", sendVerificationCode);
 
-if (articlesGrids)
+loadMoreBtns &&
+  loadMoreBtns.forEach((loadMoreBtn) =>
+    loadMoreBtn.addEventListener("click", loadMoreByButton.bind(loadMoreBtn))
+  );
+
+articlesGrids &&
   articlesGrids.forEach((articlesGrid) =>
     articlesGrid.addEventListener("click", zoomImage)
   );
 
-if (articlesGridsUploadedByUser)
+articlesGridsUploadedByUser &&
   articlesGridsUploadedByUser.addEventListener("click", (e) => {
     if (e.target.hasAttribute("data-delete-btn")) {
       showConfirmation(deletePost.bind(this, e));
@@ -438,3 +575,8 @@ filterBtn.addEventListener("click", openFilter);
 searchForm.addEventListener("submit", searchForQueryAndFilters);
 
 searchFormSelect.addEventListener("change", searchForQueryAndFilters);
+
+document.addEventListener("DOMContentLoaded", reloadColcade);
+
+// Invoicing Functions
+document.body.dataset.scroll && infiniteScroll();
