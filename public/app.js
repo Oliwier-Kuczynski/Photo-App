@@ -375,7 +375,6 @@ const sendVerificationCode = async function (e) {
 };
 
 let colc, colcUploadedByUser, colcPurchasedByUser;
-let searchQuery, filter;
 let startIndex = 0;
 
 const loadMore = async function (
@@ -385,7 +384,11 @@ const loadMore = async function (
   interval
 ) {
   startIndex += 5;
+
   const scrollCordsY = window.scrollY;
+  const urlParams = new URLSearchParams(window.location.search);
+  const searchQuery = urlParams.get("searchquery");
+  const filter = urlParams.get("filter");
 
   const response = await fetch("load-more", {
     method: "POST",
@@ -445,8 +448,8 @@ const loadMore = async function (
 
 const searchForQueryAndFilters = function (e) {
   e.preventDefault();
-  searchQuery = searchForm.querySelector("input").value;
-  filter = searchForm.querySelector("select").value;
+  const searchQuery = searchForm.querySelector("input").value;
+  const filter = searchForm.querySelector("select").value;
 
   window.location.href = `/?searchquery=${searchQuery}&filter=${filter}`;
 };
@@ -491,6 +494,26 @@ const loadMoreByButton = function () {
               </div>`;
 
     loadMore(colcUploadedByUser, additionalHtml, btnDataset);
+  }
+};
+
+const showLoadMoreBtns = function () {
+  if (
+    document.querySelector("[data-articles-grid-uploaded-by-user]").children[0]
+      .children.length < 5
+  ) {
+    document.querySelector(
+      `[data-load-more-btn="uploaded-by-user"]`
+    ).style.display = "none";
+  }
+
+  if (
+    document.querySelector("[data-articles-grid-purchased-by-user]").children[0]
+      .children.length < 5
+  ) {
+    document.querySelector(
+      `[data-load-more-btn="purchased-by-user"]`
+    ).style.display = "none";
   }
 };
 
@@ -580,3 +603,4 @@ document.addEventListener("DOMContentLoaded", reloadColcade);
 
 // Invoicing Functions
 document.body.dataset.scroll && infiniteScroll();
+showLoadMoreBtns();

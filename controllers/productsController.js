@@ -230,7 +230,7 @@ const deletePost = async (req, res) => {
 const loadMorePost = async (req, res, next) => {
   try {
     const startIndex = req.body.startIndex;
-    const searchQuery = req.body.searchquery;
+    const searchQuery = req.body.searchQuery;
     const filter = req.body.filter;
     const callbackOption = req.body.callbackOption;
 
