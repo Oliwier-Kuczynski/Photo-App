@@ -472,11 +472,13 @@ textarea {
 .articles-container {
   display: flex;
   gap: calc(var(--spacer) * 2);
+  word-wrap: break-word;
 }
 
 .articles-container > * {
   position: relative;
   flex: 1;
+  overflow-x: auto;
 }
 
 [class*="grid-col"] > * + * {
