@@ -3,51 +3,6 @@
 import * as imagesloaded from "./node_modules/imagesloaded/imagesloaded.pkgd.min.js";
 import * as colcade from "./node_modules/colcade/colcade.js";
 
-// Selections
-const registerForm = document.querySelector("[data-register-form]");
-
-const loginForm = document.querySelector("[data-login-form]");
-
-const uploadForm = document.querySelector("[data-upload-form]");
-
-const editForm = document.querySelector("[data-edit-form]");
-
-const changePasswordForm = document.querySelector(
-  "[data-change-password-form]"
-);
-
-const resetPasswordForm = document.querySelector("[data-reset-password-form]");
-
-const menuBtn = document.querySelector("[data-nav-menu-btn]");
-
-const filterBtn = document.querySelector("[data-filter-btn]");
-
-const logoutBtn = document.querySelector("[data-logout-btn]");
-
-const closeAccountBtn = document.querySelector("[data-close-account-btn]");
-
-const sendVerificationCodeBtn = document.querySelector(
-  "[data-send-verification-code-btn]"
-);
-
-const articlesGrids = document.querySelectorAll("[data-articles-grid]");
-
-const articlesGridsUploadedByUser = document.querySelector(
-  "[data-articles-grid-uploaded-by-user]"
-);
-
-const zoomedInImg = document.querySelector("[data-zoomed-in-img]");
-
-const zoomedInImgCloseBtn = document.querySelector(
-  "[data-zoomed-in-img-close-btn]"
-);
-
-const loadMoreBtns = document.querySelectorAll("[data-load-more-btn]");
-
-const searchForm = document.querySelector("[data-search-form]");
-
-const searchFormSelect = document.querySelector("[data-search-form-select]");
-
 // Layout related
 const showMessage = (status, message, redirectUrl) => {
   if (document.querySelector("[data-popup]")) {
@@ -56,10 +11,10 @@ const showMessage = (status, message, redirectUrl) => {
 
   const body = document.body;
   const htmlString = `
-  <div class="pop-up h2 text-c" data-popup>
-    <p>${message}</p>
-  </div>
-  `;
+        <div class="pop-up h2 text-c" data-popup>
+        <p>${message}</p>
+        </div>
+        `;
 
   body.insertAdjacentHTML("afterbegin", htmlString);
 
@@ -129,6 +84,8 @@ const openFilter = (e) => {
   navSpace.style.height = `${filterMenu.getBoundingClientRect().height}px`;
 };
 
+const zoomedInImg = document.querySelector("[data-zoomed-in-img]");
+
 const zoomImage = (e) => {
   const targetImg = e.target.closest("img");
 
@@ -147,7 +104,7 @@ const unZoomImage = () => {
 const showLoadMoreBtns = function () {
   if (
     document.querySelector("[data-articles-grid-uploaded-by-user]").children[0]
-      .children.length < 5
+      .children.length > 0
   ) {
     document.querySelector(
       `[data-load-more-btn="uploaded-by-user"]`
@@ -156,7 +113,7 @@ const showLoadMoreBtns = function () {
 
   if (
     document.querySelector("[data-articles-grid-purchased-by-user]").children[0]
-      .children.length < 5
+      .children.length > 0
   ) {
     document.querySelector(
       `[data-load-more-btn="purchased-by-user"]`
@@ -185,6 +142,8 @@ const fetchData = async function (url, method, contentType, body, isMessage) {
   return data;
 };
 
+const registerForm = document.querySelector("[data-register-form]");
+
 const register = async function (e) {
   e.preventDefault();
   const name = registerForm.querySelector("#name").value;
@@ -208,6 +167,8 @@ const register = async function (e) {
     true
   );
 };
+
+const loginForm = document.querySelector("[data-login-form]");
 
 const login = async function (e) {
   e.preventDefault();
@@ -244,11 +205,15 @@ const formDataUploadEdit = async function (fetchUrl, invokingElement) {
   fetchData(fetchUrl, "POST", "multipart/form-data", formData, true);
 };
 
+const uploadForm = document.querySelector("[data-upload-form]");
+
 const uploadPost = function (e) {
   e.preventDefault();
 
   formDataUploadEdit("/upload", uploadForm);
 };
+
+const editForm = document.querySelector("[data-edit-form]");
 
 const editPost = function (e) {
   e.preventDefault();
@@ -315,6 +280,10 @@ const resetPassword = async function (e) {
     true
   );
 };
+
+const sendVerificationCodeBtn = document.querySelector(
+  "[data-send-verification-code-btn]"
+);
 
 const sendVerificationCode = async function (e) {
   e.preventDefault();
@@ -425,6 +394,8 @@ const loadMore = async function (
   });
 };
 
+const searchForm = document.querySelector("[data-search-form]");
+
 const searchForQueryAndFilters = function (e) {
   e.preventDefault();
   const searchQuery = searchForm.querySelector("input").value;
@@ -506,42 +477,85 @@ const reloadColcade = function () {
 };
 
 // Eventlistners
+
+// Register Form
 registerForm && registerForm.addEventListener("submit", register);
 
+// Login Form
 loginForm && loginForm.addEventListener("submit", login);
 
+// Upload Form
 uploadForm && uploadForm.addEventListener("submit", uploadPost);
 
+// Edit Form
 editForm && editForm.addEventListener("submit", editPost);
+
+// Change Password Form
+const changePasswordForm = document.querySelector(
+  "[data-change-password-form]"
+);
 
 changePasswordForm &&
   changePasswordForm.addEventListener("submit", changePassword);
+//
+
+// Reset Password Form
+const resetPasswordForm = document.querySelector("[data-reset-password-form]");
 
 resetPasswordForm &&
   resetPasswordForm.addEventListener("submit", resetPassword);
+//
+
+// Logout Button
+const logoutBtn = document.querySelector("[data-logout-btn]");
 
 logoutBtn && logoutBtn.addEventListener("click", logout);
+//
+
+// Zoomed In Image Close Button
+const zoomedInImgCloseBtn = document.querySelector(
+  "[data-zoomed-in-img-close-btn]"
+);
 
 zoomedInImgCloseBtn &&
   zoomedInImgCloseBtn.addEventListener("click", unZoomImage);
+//
+
+// Close Account Button
+const closeAccountBtn = document.querySelector("[data-close-account-btn]");
 
 closeAccountBtn &&
   closeAccountBtn.addEventListener("click", () =>
     showConfirmation(deleteAccount)
   );
+//
 
+// Send Verification Code Button
 sendVerificationCodeBtn &&
   sendVerificationCodeBtn.addEventListener("click", sendVerificationCode);
+
+// Load More Buttons
+const loadMoreBtns = document.querySelectorAll("[data-load-more-btn]");
 
 loadMoreBtns &&
   loadMoreBtns.forEach((loadMoreBtn) =>
     loadMoreBtn.addEventListener("click", loadMoreByButton.bind(loadMoreBtn))
   );
+//
+
+// Articles Grids
+const articlesGrids = document.querySelectorAll("[data-articles-grid]");
 
 articlesGrids &&
   articlesGrids.forEach((articlesGrid) =>
     articlesGrid.addEventListener("click", zoomImage)
   );
+//
+
+// Articles Grids Uploaded By User
+const articlesGridsUploadedByUser = document.querySelector(
+  "[data-articles-grid-uploaded-by-user]"
+);
 
 articlesGridsUploadedByUser &&
   articlesGridsUploadedByUser.addEventListener("click", (e) => {
@@ -549,15 +563,30 @@ articlesGridsUploadedByUser &&
       showConfirmation(deletePost.bind(this, e));
     }
   });
+//
+
+// Menu Button
+const menuBtn = document.querySelector("[data-nav-menu-btn]");
 
 menuBtn.addEventListener("click", openMenu);
+//
+
+// Filter Button
+const filterBtn = document.querySelector("[data-filter-btn]");
 
 filterBtn.addEventListener("click", openFilter);
+//
 
+// Search Form
 searchForm.addEventListener("submit", searchForQueryAndFilters);
 
-searchFormSelect.addEventListener("change", searchForQueryAndFilters);
+// Search Form Select
+const searchFormSelect = document.querySelector("[data-search-form-select]");
 
+searchFormSelect.addEventListener("change", searchForQueryAndFilters);
+//
+
+// Reload Colcade
 document.addEventListener("DOMContentLoaded", reloadColcade);
 
 // Invoicing Functions
