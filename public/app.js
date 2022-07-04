@@ -438,7 +438,7 @@ const loadMoreByButton = function () {
   const btnDataset = this.dataset.loadMoreBtn;
 
   if (btnDataset === "uploaded-by-user") {
-    const additionalHtml = `<div class="separetor">
+    const additionalHtml = `<div class="separetor control-btns">
                 <a href="edit?id=<%= product._id %>" class="btn-gray articles-container__button ai-c" data-edit-btn="">Edit <img src="img/edit.svg" alt="edit"></a>
                 <button class="btn-gray articles-container__button ai-c" data-delete-btn="">Delete <img src="img/edit.svg" alt="delete"></button>
               </div>`;

@@ -14,24 +14,28 @@ const doesUserExists = async (username) => {
 };
 
 const sendMail = async (username, messageTitle, messageText, messageHtml) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.mail.yahoo.com",
-    port: 465,
-    secure: true, // true for 465, false for other ports
-    auth: {
-      user: process.env.MAIL__ADRESS, // generated ethereal user
-      pass: process.env.MAIL__PWD, // generated ethereal password
-    },
-  });
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.mail.yahoo.com",
+      port: 465,
+      secure: true, // true for 465, false for other ports
+      auth: {
+        user: process.env.MAIL__ADRESS, // generated ethereal user
+        pass: process.env.MAIL__PWD, // generated ethereal password
+      },
+    });
 
-  // send mail with defined transport object
-  await transporter.sendMail({
-    from: `"Portal Administration" <${process.env.MAIL__ADRESS}>`, // sender address
-    to: username, // list of receivers
-    subject: messageTitle, // Subject line
-    text: messageText, // plain text body
-    html: messageHtml, // html body
-  });
+    // send mail with defined transport object
+    await transporter.sendMail({
+      from: `"Portal Administration" <${process.env.MAIL__ADRESS}>`, // sender address
+      to: username, // list of receivers
+      subject: messageTitle, // Subject line
+      text: messageText, // plain text body
+      html: messageHtml, // html body
+    });
+  } catch (err) {
+    throw new Error("Failed to send an email");
+  }
 };
 
 const sendVerifictaionCodePost = async (req, res) => {
@@ -98,8 +102,9 @@ const loginPost = (req, res, next) => {
 const registerPost = async (req, res) => {
   try {
     const { agreed, name, username } = req.body;
+    const exists = await doesUserExists(username);
 
-    if (await doesUserExists(username))
+    if (exists)
       return res.status(409).json({
         status: "error",
         message: "User already exists in our database",

@@ -249,7 +249,7 @@ const loadMorePost = async (req, res, next) => {
       res.status(200).json(products);
     }
   } catch (err) {
-    res.status(500).send();
+    res.status(500);
   }
 };
 

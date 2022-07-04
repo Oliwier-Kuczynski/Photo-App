@@ -478,7 +478,7 @@ textarea {
 .articles-container > * {
   position: relative;
   flex: 1;
-  overflow-x: auto;
+  overflow: auto hidden;
 }
 
 [class*="grid-col"] > * + * {
@@ -510,6 +510,10 @@ textarea {
   font-size: var(--fs-100);
   font-weight: var(--fw-500);
   color: var(--primary-color-800);
+}
+
+.articles-container .control-btns {
+  gap: var(--spacer);
 }
 
 .articles-container__button {

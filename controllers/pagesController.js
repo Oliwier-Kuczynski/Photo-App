@@ -1,5 +1,36 @@
 const productsController = require("../controllers/productsController");
 
+const renderPage = (req, res, page, data, resetPasswordRedirect) => {
+  const searchQuery = req.query.searchquery || "";
+  const filter = req.query.filter || "";
+
+  if (resetPasswordRedirect) {
+    if (req.isAuthenticated()) return res.redirect("/");
+
+    res.render(page, {
+      authenticated: true,
+      searchQuery,
+      filter,
+    });
+  }
+
+  if (req.isAuthenticated()) {
+    return res.render(page, {
+      authenticated: true,
+      searchQuery,
+      filter,
+      ...data,
+    });
+  }
+
+  res.render(page, {
+    authenticated: false,
+    searchQuery,
+    filter,
+    ...data,
+  });
+};
+
 const homePageGet = async (req, res) => {
   const searchQuery = req.query.searchquery || "";
   const filter = req.query.filter || "";
@@ -7,130 +38,60 @@ const homePageGet = async (req, res) => {
   try {
     let products = await productsController.getProducts(searchQuery, filter);
 
-    if (req.isAuthenticated()) {
-      return res.render("index.ejs", {
-        authenticated: true,
-        products: products,
-        searchQuery,
-        filter,
-      });
-    }
-    res.render("index.ejs", {
-      authenticated: false,
-      products: products,
-      searchQuery,
-      filter,
-    });
+    renderPage(req, res, "index.ejs", { products }, false);
   } catch (err) {
-    res.status(500).send();
+    res.status(500);
   }
 };
 
 const aboutGet = (req, res) => {
-  const searchQuery = req.query.searchquery || "";
-  const filter = req.query.filter || "";
-
-  if (req.isAuthenticated())
-    return res.render("about.ejs", {
-      authenticated: true,
-      searchQuery,
-      filter,
-    });
-  res.render("about.ejs", { authenticated: false, searchQuery, filter });
+  renderPage(req, res, "about.ejs", undefined, false);
 };
 
 const profileGet = async (req, res) => {
-  const searchQuery = req.query.searchquery || "";
-  const filter = req.query.filter || "";
-
   try {
     const allUserProducts =
       await productsController.getAllProductsUploadedByUser(req, res);
 
-    res.render("profile.ejs", {
-      authenticated: true,
-      products: allUserProducts,
-      usersName: req.user.name,
-      searchQuery,
-      filter,
-    });
+    renderPage(
+      req,
+      res,
+      "profile.ejs",
+      { products: allUserProducts, usersName: req.user.name },
+      false
+    );
   } catch (err) {
-    res.status(500).send();
+    res.status(500);
   }
 };
 
 const loginGet = (req, res) => {
-  const searchQuery = req.query.searchquery || "";
-  const filter = req.query.filter || "";
-
-  if (req.isAuthenticated())
-    return res.render("login.ejs", {
-      authenticated: true,
-      searchQuery,
-      filter,
-    });
-  res.render("login.ejs", { authenticated: false, searchQuery, filter });
+  renderPage(req, res, "login.ejs", undefined, false);
 };
 
 const registerGet = (req, res) => {
-  const searchQuery = req.query.searchquery || "";
-  const filter = req.query.filter || "";
-
-  if (req.isAuthenticated())
-    return res.render("register.ejs", {
-      authenticated: true,
-      searchQuery,
-      filter,
-    });
-  res.render("register.ejs", { authenticated: false, searchQuery, filter });
+  renderPage(req, res, "register.ejs", undefined, false);
 };
 
 const changePasswordGet = (req, res) => {
-  const searchQuery = req.query.searchquery || "";
-  const filter = req.query.filter || "";
-
-  res.render("change-password.ejs", {
-    authenticated: true,
-    searchQuery,
-    filter,
-  });
+  renderPage(req, res, "change-password.ejs", undefined, false);
 };
 
 const resetPasswordGet = (req, res) => {
-  const searchQuery = req.query.searchquery || "";
-  const filter = req.query.filter || "";
-
-  if (req.isAuthenticated()) return res.redirect("/");
-
-  res.render("reset-password.ejs", {
-    authenticated: true,
-    searchQuery,
-    filter,
-  });
+  renderPage(req, res, "reset-password.ejs", undefined, true);
 };
 
 const uploadGet = (req, res) => {
-  const searchQuery = req.query.searchquery || "";
-  const filter = req.query.filter || "";
-
-  res.render("upload.ejs", { authenticated: true, searchQuery, filter });
+  renderPage(req, res, "upload.ejs", undefined, false);
 };
 
 const editGet = async (req, res) => {
-  const searchQuery = req.query.searchquery || "";
-  const filter = req.query.filter || "";
-
   try {
     const product = await productsController.getSpecificProduct(req.query.id);
 
-    res.render("edit.ejs", {
-      authenticated: true,
-      product: product,
-      searchQuery,
-      filter,
-    });
+    renderPage(req, res, "edit.ejs", { product }, false);
   } catch (err) {
-    res.status(500).send();
+    res.status(500);
   }
 };
 
