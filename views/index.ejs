@@ -22,10 +22,18 @@
           <% products.forEach(product => { %>
             <% const date = product.createdAt.toISOString().split('T')[0].replaceAll('-', '/'); %> 
 
-            <article class="ver-spacer grid-item" id="<% product._id %>">
+            <article class="ver-spacer grid-item" id="<% product._id %>" data-full-text='<%= product.description %>' >
               <img src="<%= product.optimizedImgUrl %>" data-original-img-source="<%= product.imgUrl %> " alt="article photo" class="articles-container__article-img">
               <h2><%= product.title %></h2>
-              <p><%= product.description %> <button class="articles-container__highlight">Read more</button></p>
+
+              <% if(product.description.length >= 80) { %> 
+              <p><%= `${product.description.slice(0, 80)} ${'.'.repeat(3)}` %> <button class="articles-container__highlight" data-full-text-btn="">Read more</button></p>
+              <% } %> 
+
+              <% if(product.description.length <= 80) { %> 
+              <p><%= product.description.slice(0, 80) %></p>
+              <% } %>
+
               <div class="articles-container__article-info separetor"><p>Price: <%= product.price  %> &#36</p><p>Author: <%= product.authorName %> </p><p>Uploaded: <%= date %></p> <p>Resolution: <%= product.resolution %></p></div>
               <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
           </article>
@@ -36,6 +44,13 @@
           <div>
             <button class="btn-dark" data-zoomed-in-img-close-btn=""><img src="img/close.svg" alt=""></button>
             <img src="img/IMG_20200922_153646.jpg" alt="" data-main-img="">
+          </div>
+        </div>
+
+        <div class="full-text" data-full-text-container="">
+          <div>
+            <button class="btn-dark" data-full-text-close-btn=""><img src="img/close.svg" alt=""></button>
+            <p></p>
           </div>
         </div>
 

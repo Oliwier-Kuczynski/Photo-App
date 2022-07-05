@@ -95,10 +95,36 @@ const zoomImage = (e) => {
     targetImg.dataset.originalImgSource;
 
   zoomedInImg.classList.add("show");
+
+  const zoomedInImgCloseBtn = zoomedInImg.querySelector(
+    "[data-zoomed-in-img-close-btn]"
+  );
+
+  zoomedInImgCloseBtn.addEventListener("click", (e) => {
+    zoomedInImg.classList.remove("show");
+  });
 };
 
-const unZoomImage = () => {
-  zoomedInImg.classList.remove("show");
+const showFullText = function (e) {
+  const showFullTextContainer = document.querySelector(
+    "[data-full-text-container]"
+  );
+
+  if (!e.target.closest("[data-full-text-btn]")) return;
+
+  showFullTextContainer.querySelector("p").textContent = e.target
+    .closest("article")
+    .getAttribute("data-full-text");
+
+  showFullTextContainer.classList.add("show");
+
+  const showFullTextContainerCloseBtn = showFullTextContainer.querySelector(
+    "[data-full-text-close-btn]"
+  );
+
+  showFullTextContainerCloseBtn.addEventListener("click", (e) => {
+    showFullTextContainer.classList.remove("show");
+  });
 };
 
 const showLoadMoreBtns = function () {
@@ -122,13 +148,11 @@ const showLoadMoreBtns = function () {
 };
 
 // Sending requsets to the backend
-const fetchData = async function (url, method, contentType, body, isMessage) {
+const fetchData = async function (url, method, headers, body, isMessage) {
   const response = await fetch(url, {
     method: method,
-    headers: {
-      "Content-Type": contentType,
-    },
-    body: body,
+    headers,
+    body,
   });
 
   const data = await response.json();
@@ -157,7 +181,7 @@ const register = async function (e) {
   fetchData(
     "/register",
     "POST",
-    "application/json",
+    { "Content-Type": "application/json" },
     JSON.stringify({
       username,
       password,
@@ -178,7 +202,7 @@ const login = async function (e) {
   fetchData(
     "/login",
     "POST",
-    "application/json",
+    { "Content-Type": "application/json" },
     JSON.stringify({
       username,
       password,
@@ -202,7 +226,7 @@ const formDataUploadEdit = async function (fetchUrl, invokingElement) {
   formData.append("price", price);
   formData.append("image", image);
 
-  fetchData(fetchUrl, "POST", "multipart/form-data", formData, true);
+  fetchData(fetchUrl, "POST", {}, formData, true);
 };
 
 const uploadForm = document.querySelector("[data-upload-form]");
@@ -227,7 +251,7 @@ const deletePost = async function (e) {
   fetchData(
     "/delete",
     "POST",
-    "application/json",
+    { "Content-Type": "application/json" },
     JSON.stringify({
       id,
     }),
@@ -238,11 +262,23 @@ const deletePost = async function (e) {
 const logout = async function (e) {
   e.preventDefault();
 
-  fetchData("/logout", "POST", "application/xml", undefined, true);
+  fetchData(
+    "/logout",
+    "POST",
+    { "Content-Type": "application/xml" },
+    undefined,
+    true
+  );
 };
 
 const deleteAccount = async () => {
-  fetchData("/close-account", "POST", "application/xml", undefined, true);
+  fetchData(
+    "/close-account",
+    "POST",
+    { "Content-Type": "application/json" },
+    undefined,
+    true
+  );
 };
 
 const changePassword = async function (e) {
@@ -259,7 +295,7 @@ const changePassword = async function (e) {
   fetchData(
     "/change-password",
     "POST",
-    "application/json",
+    { "Content-Type": "application/json" },
     JSON.stringify({ oldPassword, newPassword }),
     true
   );
@@ -275,7 +311,7 @@ const resetPassword = async function (e) {
   fetchData(
     "/reset-password",
     "POST",
-    "application/json",
+    { "Content-Type": "application/json" },
     JSON.stringify({ username, password, code }),
     true
   );
@@ -295,7 +331,7 @@ const sendVerificationCode = async function (e) {
   const { status } = await fetchData(
     "/send-verification-code",
     "POST",
-    "application/json",
+    { "Content-Type": "application/json" },
     JSON.stringify({ username }),
     true
   );
@@ -342,12 +378,10 @@ const loadMore = async function (
   const products = await fetchData(
     "/load-more",
     "POST",
-    "application/json",
+    { "Content-Type": "application/json" },
     JSON.stringify({ startIndex, searchQuery, filter, callbackOption }),
     false
   );
-
-  console.log(products);
 
   if (products.length === 0 && interval) return clearInterval(interval);
 
@@ -367,13 +401,39 @@ const loadMore = async function (
       .split("T")[0]
       .replaceAll("-", "/");
 
-    const htmlString = `
-      <img src="${product.optimizedImgUrl}" data-original-img-source="${product.imgUrl}" alt="article photo" class="articles-container__article-img">
+    let htmlString;
+
+    if (product.description.length >= 80) {
+      // prettier-ignore
+      htmlString = `<img src="${
+        product.optimizedImgUrl
+      }" data-original-img-source="${
+        product.imgUrl
+      }" alt="article photo" class="articles-container__article-img">
       <h2>${product.title}</h2>
-      <p>${product.description} <button class="articles-container__highlight">Read more</button></p>
+      <p>${product.description.slice(0, 80)} ${".".repeat(
+        3
+      )} <button class="articles-container__highlight" data-full-text-btn="">Read more</button></p>
+      <div class="articles-container__article-info separetor"><p>Price: ${
+        product.price
+      } &#36</p><p>Author: ${
+        product.authorName
+      } </p><p>Uploaded: ${date}</p> <p>Resolution: ${
+        product.resolution
+      }</p></div>
+      ${additionalHtml}
+      `;
+    }
+
+    if (product.description.length <= 80) {
+      // prettier-ignore
+      htmlString = `<img src="${product.optimizedImgUrl}" data-original-img-source="${product.imgUrl}" alt="article photo" class="articles-container__article-img">
+      <h2>${product.title}</h2>
+      <p>${product.description}
       <div class="articles-container__article-info separetor"><p>Price: ${product.price} &#36</p><p>Author: ${product.authorName} </p><p>Uploaded: ${date}</p> <p>Resolution: ${product.resolution}</p></div>
       ${additionalHtml}
       `;
+    }
 
     const item = document.createElement("article");
 
@@ -381,6 +441,7 @@ const loadMore = async function (
       1
     )}`;
     item.setAttribute("id", product._id);
+    item.setAttribute("data-full-text", product.description);
     item.insertAdjacentHTML("beforeend", htmlString);
 
     itemsToAppend.push(item);
@@ -513,13 +574,6 @@ logoutBtn && logoutBtn.addEventListener("click", logout);
 //
 
 // Zoomed In Image Close Button
-const zoomedInImgCloseBtn = document.querySelector(
-  "[data-zoomed-in-img-close-btn]"
-);
-
-zoomedInImgCloseBtn &&
-  zoomedInImgCloseBtn.addEventListener("click", unZoomImage);
-//
 
 // Close Account Button
 const closeAccountBtn = document.querySelector("[data-close-account-btn]");
@@ -548,7 +602,10 @@ const articlesGrids = document.querySelectorAll("[data-articles-grid]");
 
 articlesGrids &&
   articlesGrids.forEach((articlesGrid) =>
-    articlesGrid.addEventListener("click", zoomImage)
+    articlesGrid.addEventListener("click", (e) => {
+      zoomImage(e);
+      showFullText(e);
+    })
   );
 //
 

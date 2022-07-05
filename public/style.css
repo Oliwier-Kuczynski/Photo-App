@@ -374,6 +374,55 @@ textarea {
   width: 35px;
 }
 
+/* Full Text */
+.full-text {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  place-items: center;
+  padding-inline: 1rem;
+  z-index: 10002;
+  background-color: hsla(0, 0%, 28%, 0.98);
+}
+
+.full-text.show {
+  display: grid;
+}
+
+.full-text > div {
+  height: 80vh;
+  width: 100%;
+  max-width: 30rem;
+  padding: 1rem;
+  overflow-y: scroll;
+  background-color: var(--primary-color-100);
+  border-radius: var(--br-200);
+  word-wrap: break-word;
+}
+
+.full-text > div::-webkit-scrollbar {
+  width: 10px;
+}
+
+.full-text > div::-webkit-scrollbar-track {
+  background: none;
+}
+
+.full-text > div::-webkit-scrollbar-thumb {
+  border-radius: var(--br-200);
+  background: var(--black);
+}
+
+.full-text button {
+  display: block;
+  margin-left: auto;
+  margin-bottom: 1rem;
+  padding: 0.25rem;
+}
+
 /* Navigation */
 
 .primary-nav {
