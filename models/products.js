@@ -31,6 +31,14 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    imgUrlWatermarked: {
+      type: String,
+      required: true,
+    },
+    optimizedImgUrlWatermarked: {
+      type: String,
+      required: true,
+    },
     popularityScore: {
       type: Number,
       default: 0,

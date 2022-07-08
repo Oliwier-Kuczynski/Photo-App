@@ -1,6 +1,7 @@
 const sizeOf = require("image-size");
 const sharp = require("sharp");
 const path = require("path");
+const fs = require("fs");
 
 const productConnection = require("../models/products");
 const userConnection = require("../models/user");
@@ -13,27 +14,85 @@ const belongsToUser = (user, productId) => {
 };
 
 // This utility optimizes img gets it's resolution and changes format of a original url
-const imgUtility = (imgUrlOrginal, imgName) => {
-  sharp(imgUrlOrginal)
-    .webp({ quality: 80 })
-    .resize({ width: 600 })
-    .toFile(`uploads/optimized-images/${imgName}.webp`, (err, info) => {
-      if (err) throw new Error("Sharp error");
-    });
-
+const imgUtility = async (imgUrlOrginal, imgName) => {
   const imgUrl = imgUrlOrginal
     .replaceAll(String.fromCharCode(92), "/")
     .split("/")
     .slice(1)
     .join("/");
 
+  const imgUrlWatermarked = `images/watermarked/${imgName}.webp`;
+
   const optimizedImgUrl = `optimized-images/${imgName}.webp`;
 
-  const { width, height } = sizeOf(imgUrlOrginal);
+  const optimizedImgUrlWatermarked = `optimized-images/watermarked/${imgName}.webp`;
 
-  const resolution = `${width}x${height}`;
+  try {
+    const sharpStream = sharp({ failOn: "none" });
 
-  return { imgUrl, optimizedImgUrl, resolution };
+    const promises = [];
+
+    promises.push(
+      sharpStream
+        .clone()
+        .resize({ width: 600 })
+        .webp({ quality: 80 })
+        .toFile(`uploads/optimized-images/${imgName}.webp`)
+    );
+
+    promises.push(
+      sharpStream
+        .clone()
+        .composite([
+          {
+            input: "public/Copyright.png",
+            gravity: "centre",
+            tile: true,
+          },
+        ])
+        .webp()
+        .toFile(`uploads/images/watermarked/${imgName}.webp`)
+    );
+
+    promises.push(
+      sharpStream
+        .clone()
+        .resize({ width: 600 })
+        .composite([
+          {
+            input: "public/Copyright.png",
+            gravity: "centre",
+            tile: true,
+          },
+        ])
+        .webp({ quality: 80 })
+        .toFile(`uploads/optimized-images/watermarked/${imgName}.webp`)
+    );
+
+    fs.createReadStream(imgUrlOrginal).pipe(sharpStream);
+
+    const { width, height } = sizeOf(imgUrlOrginal);
+
+    const resolution = `${width}x${height}`;
+
+    await Promise.all(promises);
+
+    return {
+      imgUrl,
+      optimizedImgUrl,
+      imgUrlWatermarked,
+      optimizedImgUrlWatermarked,
+      resolution,
+    };
+  } catch (err) {
+    try {
+      fs.unlinkSync(`uploads/${imgUrl}`);
+      fs.unlinkSync(`uploads/${optimizedImgUrl}`);
+      fs.unlinkSync(`uploads/${imgUrlWatermarked}`);
+      fs.unlinkSync(`uploads/${optimizedImgUrlWatermarked}`);
+    } catch (err) {}
+    throw new Error("Error in imgUtility function", err);
+  }
 };
 
 ///////////////////////////
@@ -121,10 +180,13 @@ const uploadPost = async (req, res) => {
     const imgUrlOrginal = req.file.path;
     const imgName = path.parse(req.file.filename).name;
 
-    const { imgUrl, optimizedImgUrl, resolution } = imgUtility(
-      imgUrlOrginal,
-      imgName
-    );
+    const {
+      imgUrl,
+      optimizedImgUrl,
+      imgUrlWatermarked,
+      optimizedImgUrlWatermarked,
+      resolution,
+    } = await imgUtility(imgUrlOrginal, imgName);
 
     const newProduct = new Product({
       title,
@@ -132,6 +194,8 @@ const uploadPost = async (req, res) => {
       price,
       imgUrl,
       optimizedImgUrl,
+      imgUrlWatermarked,
+      optimizedImgUrlWatermarked,
       authorName,
       authorId,
       resolution,
@@ -165,6 +229,8 @@ const editPost = async (req, res) => {
 
     let imgUrl = product.imgUrl,
       optimizedImgUrl = product.optimizedImgUrl,
+      imgUrlWatermarked = product.imgUrlWatermarked,
+      optimizedImgUrlWatermarked = product.optimizedImgUrlWatermarked,
       resolution = product.resolution;
 
     if (!belongsToUser(req.user, productId))
@@ -179,11 +245,15 @@ const editPost = async (req, res) => {
       const {
         imgUrl: newImgUrl,
         optimizedImgUrl: newOptimizedImgUrl,
+        imgUrlWatermarked: newImgUrlWatermarked,
+        optimizedImgUrlWatermarked: newOptimizedImgUrlWatermarked,
         resolution: newResolution,
-      } = imgUtility(imgUrlOrginal, imgName);
+      } = await imgUtility(imgUrlOrginal, imgName);
 
       imgUrl = newImgUrl;
       optimizedImgUrl = newOptimizedImgUrl;
+      imgUrlWatermarked = newImgUrlWatermarked;
+      optimizedImgUrlWatermarked = newOptimizedImgUrlWatermarked;
       resolution = newResolution;
     }
 
@@ -195,6 +265,8 @@ const editPost = async (req, res) => {
         price,
         imgUrl,
         optimizedImgUrl,
+        imgUrlWatermarked,
+        optimizedImgUrlWatermarked,
         resolution,
       }
     );

@@ -147,8 +147,15 @@ const showLoadMoreBtns = function () {
   }
 };
 
+let allowRequest = true;
+
 // Sending requsets to the backend
 const fetchData = async function (url, method, headers, body, isMessage) {
+  console.log();
+  if (!allowRequest && url !== "/delete") return;
+
+  allowRequest = false;
+
   const response = await fetch(url, {
     method: method,
     headers,
@@ -160,6 +167,10 @@ const fetchData = async function (url, method, headers, body, isMessage) {
   if (!isMessage) return data;
 
   const { status, message, redirectUrl } = data;
+
+  setTimeout(() => {
+    allowRequest = true;
+  }, 4000);
 
   showMessage(status, message, redirectUrl);
 
@@ -366,6 +377,7 @@ const loadMore = async function (
   colcadeItem,
   additionalHtml,
   callbackOption,
+  watermark,
   interval
 ) {
   startIndex += 5;
@@ -382,6 +394,8 @@ const loadMore = async function (
     JSON.stringify({ startIndex, searchQuery, filter, callbackOption }),
     false
   );
+
+  if (!products) return;
 
   if (products.length === 0 && interval) return clearInterval(interval);
 
@@ -406,9 +420,9 @@ const loadMore = async function (
     if (product.description.length >= 80) {
       // prettier-ignore
       htmlString = `<img src="${
-        product.optimizedImgUrl
+        watermark ? product.optimizedImgUrlWatermarked : product.optimizedImgUrl
       }" data-original-img-source="${
-        product.imgUrl
+        watermark ? product.imgUrlWatermarked : product.imgUrl
       }" alt="article photo" class="articles-container__article-img">
       <h2>${product.title}</h2>
       <p>${product.description.slice(0, 80)} ${".".repeat(
@@ -427,10 +441,20 @@ const loadMore = async function (
 
     if (product.description.length <= 80) {
       // prettier-ignore
-      htmlString = `<img src="${product.optimizedImgUrl}" data-original-img-source="${product.imgUrl}" alt="article photo" class="articles-container__article-img">
+      htmlString = `<img src="${
+        watermark ? product.optimizedImgUrlWatermarked : product.optimizedImgUrl
+      }" data-original-img-source="${
+        watermark ? product.imgUrlWatermarked : product.imgUrl
+      }" alt="article photo" class="articles-container__article-img">
       <h2>${product.title}</h2>
       <p>${product.description}
-      <div class="articles-container__article-info separetor"><p>Price: ${product.price} &#36</p><p>Author: ${product.authorName} </p><p>Uploaded: ${date}</p> <p>Resolution: ${product.resolution}</p></div>
+      <div class="articles-container__article-info separetor"><p>Price: ${
+        product.price
+      } &#36</p><p>Author: ${
+        product.authorName
+      } </p><p>Uploaded: ${date}</p> <p>Resolution: ${
+        product.resolution
+      }</p></div>
       ${additionalHtml}
       `;
     }
@@ -485,11 +509,11 @@ const infiniteScroll = function () {
         document.documentElement.getBoundingClientRect().height
       );
 
-      if (windowHeightPlusYOffset >= documentHeigth - 100) {
+      if (windowHeightPlusYOffset >= documentHeigth) {
         const additionalHtml =
           '<button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>';
 
-        loadMore(colc, additionalHtml, "all", scrollInterval);
+        loadMore(colc, additionalHtml, "all", true, scrollInterval);
       }
     }
   }, 300);
@@ -504,7 +528,7 @@ const loadMoreByButton = function () {
                 <button class="btn-gray articles-container__button ai-c" data-delete-btn="">Delete <img src="img/edit.svg" alt="delete"></button>
               </div>`;
 
-    loadMore(colcUploadedByUser, additionalHtml, btnDataset);
+    loadMore(colcUploadedByUser, additionalHtml, btnDataset, false);
   }
 };
 
