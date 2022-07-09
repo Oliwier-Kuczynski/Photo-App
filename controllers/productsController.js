@@ -295,7 +295,18 @@ const deletePost = async (req, res) => {
         message: "You don't have permission to do this operation",
       });
 
-    await Product.findByIdAndDelete(productId);
+    const product = await Product.findOne({ _id: productId });
+
+    if (!product.isPurchased) {
+      try {
+        fs.unlinkSync(`uploads/${product.imgUrl}`);
+        fs.unlinkSync(`uploads/${product.optimizedImgUrl}`);
+        fs.unlinkSync(`uploads/${product.imgUrlWatermarked}`);
+        fs.unlinkSync(`uploads/${product.optimizedImgUrlWatermarked}`);
+      } catch (err) {}
+    }
+
+    product.delete();
 
     res
       .status(200)

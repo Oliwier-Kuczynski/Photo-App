@@ -46,6 +46,11 @@ const ProductSchema = new mongoose.Schema(
     resolution: {
       type: String,
     },
+    isPurchased: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
   { timestamps: true }
 );
