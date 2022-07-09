@@ -13,6 +13,8 @@ router.get("/register", pagesController.registerGet);
 
 router.get("/profile", isAuth, pagesController.profileGet);
 
+router.get("/author", pagesController.authorGet);
+
 router.get("/upload", isAuth, pagesController.uploadGet);
 
 router.get("/edit", isAuth, pagesController.editGet);

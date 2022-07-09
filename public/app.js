@@ -128,30 +128,30 @@ const showFullText = function (e) {
 };
 
 const showLoadMoreBtns = function () {
-  if (
-    document.querySelector("[data-articles-grid-uploaded-by-user]").children[0]
-      .children.length > 0
-  ) {
-    document.querySelector(
-      `[data-load-more-btn="uploaded-by-user"]`
-    ).style.display = "block";
+  const showLoadMoreBtnsUtility = (element) => {
+    if (
+      document.querySelector(`[data-articles-grid-${element}]`).children[0]
+        .children.length > 0
+    ) {
+      document.querySelector(
+        `[data-load-more-btn="${element}"]`
+      ).style.display = "block";
+    }
+  };
+
+  if (document.body.hasAttribute("data-profile")) {
+    showLoadMoreBtnsUtility("uploaded-by-user");
+    showLoadMoreBtnsUtility("purchased-by-user");
   }
 
-  if (
-    document.querySelector("[data-articles-grid-purchased-by-user]").children[0]
-      .children.length > 0
-  ) {
-    document.querySelector(
-      `[data-load-more-btn="purchased-by-user"]`
-    ).style.display = "block";
-  }
+  if (document.body.hasAttribute("data-author"))
+    showLoadMoreBtnsUtility("uploaded-by-author");
 };
 
 let allowRequest = true;
 
 // Sending requsets to the backend
 const fetchData = async function (url, method, headers, body, isMessage) {
-  console.log();
   if (!allowRequest && url !== "/delete") return;
 
   allowRequest = false;
@@ -370,7 +370,7 @@ const sendVerificationCode = async function (e) {
   }, 1000);
 };
 
-let colc, colcUploadedByUser, colcPurchasedByUser;
+let colc, colcUploadedByUser, colcPurchasedByUser, colcUploadedByAuthor;
 let startIndex = 0;
 
 const loadMore = async function (
@@ -378,6 +378,7 @@ const loadMore = async function (
   additionalHtml,
   callbackOption,
   watermark,
+  authorLink,
   interval
 ) {
   startIndex += 5;
@@ -386,25 +387,32 @@ const loadMore = async function (
   const urlParams = new URLSearchParams(window.location.search);
   const searchQuery = urlParams.get("searchquery");
   const filter = urlParams.get("filter");
+  const authorId = urlParams.get("authorId");
 
   const products = await fetchData(
     "/load-more",
     "POST",
     { "Content-Type": "application/json" },
-    JSON.stringify({ startIndex, searchQuery, filter, callbackOption }),
+    JSON.stringify({
+      startIndex,
+      searchQuery,
+      filter,
+      authorId,
+      callbackOption,
+    }),
     false
   );
 
-  if (!products) return;
+  if (!products?.length && interval) return clearInterval(interval);
 
-  if (products.length === 0 && interval) return clearInterval(interval);
-
-  if (products.length === 0) {
+  if (!products?.length) {
     const moreBtn = colcadeItem.element.parentElement.querySelector(
       "[data-load-more-btn]"
     );
     moreBtn.textContent = "End";
     moreBtn.style.pointerEvents = "none";
+
+    return;
   }
 
   let itemsToAppend = [];
@@ -430,9 +438,9 @@ const loadMore = async function (
       )} <button class="articles-container__highlight" data-full-text-btn="">Read more</button></p>
       <div class="articles-container__article-info separetor"><p>Price: ${
         product.price
-      } &#36</p><p>Author: ${
-        product.authorName
-      } </p><p>Uploaded: ${date}</p> <p>Resolution: ${
+      } &#36</p>$<a href=${authorLink ? `author?authorId=${product.authorId}` : "profile"} class=link-style-inherit >Author: ${
+        product.authorName}
+      } </a><p>Uploaded: ${date}</p> <p>Resolution: ${
         product.resolution
       }</p></div>
       ${additionalHtml}
@@ -450,9 +458,11 @@ const loadMore = async function (
       <p>${product.description}
       <div class="articles-container__article-info separetor"><p>Price: ${
         product.price
-      } &#36</p><p>Author: ${
+      } &#36</p><a href=${
+        authorLink ? `author?authorId=${product.authorId}` : "profile"
+      } class=link-style-inherit >Author: ${
         product.authorName
-      } </p><p>Uploaded: ${date}</p> <p>Resolution: ${
+      } </a><p>Uploaded: ${date}</p> <p>Resolution: ${
         product.resolution
       }</p></div>
       ${additionalHtml}
@@ -513,7 +523,7 @@ const infiniteScroll = function () {
         const additionalHtml =
           '<button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>';
 
-        loadMore(colc, additionalHtml, "all", true, scrollInterval);
+        loadMore(colc, additionalHtml, "all", true, true, scrollInterval);
       }
     }
   }, 300);
@@ -528,7 +538,13 @@ const loadMoreByButton = function () {
                 <button class="btn-gray articles-container__button ai-c" data-delete-btn="">Delete <img src="img/edit.svg" alt="delete"></button>
               </div>`;
 
-    loadMore(colcUploadedByUser, additionalHtml, btnDataset, false);
+    loadMore(colcUploadedByUser, additionalHtml, btnDataset, false, false);
+  }
+
+  if (btnDataset === "uploaded-by-author") {
+    const additionalHtml = `<button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>`;
+
+    loadMore(colcUploadedByAuthor, additionalHtml, btnDataset, true, false);
   }
 };
 
@@ -552,6 +568,13 @@ if (document.querySelector(".grid-purchased-by-user")) {
   colcPurchasedByUser = new Colcade(".grid-purchased-by-user", {
     columns: ".grid-col-purchased-by-user",
     items: ".grid-item-purchased-by-user",
+  });
+}
+
+if (document.querySelector(".grid-uploaded-by-author")) {
+  colcUploadedByAuthor = new Colcade(".grid-uploaded-by-author", {
+    columns: ".grid-col-uploaded-by-author",
+    items: ".grid-item-uploaded-by-author",
   });
 }
 
@@ -673,3 +696,4 @@ document.addEventListener("DOMContentLoaded", reloadColcade);
 // Invoicing Functions
 document.body.dataset.scroll && infiniteScroll();
 document.body.hasAttribute("data-profile") && showLoadMoreBtns();
+document.body.hasAttribute("data-author") && showLoadMoreBtns();

@@ -186,6 +186,10 @@ h2,
   text-align: center;
 }
 
+.section-indicetor {
+  margin-block: calc(var(--spacer) * 2.5);
+}
+
 /* Components */
 /* Load More Button */
 .load-more-btn {
@@ -577,9 +581,6 @@ textarea {
 }
 
 /* Profile Page */
-.profile-section-indicetor {
-  margin-block: calc(var(--spacer) * 2.5);
-}
 
 .upload-btn {
   display: block;

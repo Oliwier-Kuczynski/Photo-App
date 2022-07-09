@@ -153,9 +153,15 @@ const getProducts = (searchQuery, filter, startIndex) => {
   }
 };
 
-const getAllProductsUploadedByUser = async (req, res, next, startIndex) => {
+const getAllProductsUploadedByUser = async (
+  req,
+  res,
+  next,
+  startIndex = 0,
+  productsIds
+) => {
   try {
-    const allUserProductsIds = req.user.uploadedProducts;
+    const allUserProductsIds = productsIds || req.user.uploadedProducts;
 
     const allUserProducts = await Product.find({
       _id: { $in: allUserProductsIds },
@@ -308,7 +314,7 @@ const loadMorePost = async (req, res, next) => {
 
     if (callbackOption === "all") {
       const products = await getProducts(searchQuery, filter, startIndex);
-      res.status(200).json(products);
+      return res.status(200).json(products);
     }
 
     if (callbackOption === "uploaded-by-user") {
@@ -318,7 +324,22 @@ const loadMorePost = async (req, res, next) => {
         next,
         startIndex
       );
-      res.status(200).json(products);
+      return res.status(200).json(products);
+    }
+
+    if (callbackOption === "uploaded-by-author") {
+      const authorId = req.body.authorId;
+
+      const allAuthorProducts = await User.findById(authorId).uploadedProducts;
+
+      const products = await getAllProductsUploadedByUser(
+        req,
+        res,
+        next,
+        startIndex,
+        allAuthorProducts
+      );
+      return res.status(200).json(products);
     }
   } catch (err) {
     res.status(500);
