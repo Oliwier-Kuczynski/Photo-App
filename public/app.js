@@ -378,7 +378,6 @@ const loadMore = async function (
   additionalHtml,
   callbackOption,
   watermark,
-  authorLink,
   interval
 ) {
   startIndex += 5;
@@ -438,7 +437,7 @@ const loadMore = async function (
       )} <button class="articles-container__highlight" data-full-text-btn="">Read more</button></p>
       <div class="articles-container__article-info separetor"><p>Price: ${
         product.price
-      } &#36</p>$<a href=${authorLink ? `author?authorId=${product.authorId}` : "profile"} class=link-style-inherit >Author: ${
+      } &#36</p>$<a href=${`author?authorId=${product.authorId}`} class=link-style-inherit >Author: ${
         product.authorName}
       } </a><p>Uploaded: ${date}</p> <p>Resolution: ${
         product.resolution
@@ -458,8 +457,7 @@ const loadMore = async function (
       <p>${product.description}
       <div class="articles-container__article-info separetor"><p>Price: ${
         product.price
-      } &#36</p><a href=${
-        authorLink ? `author?authorId=${product.authorId}` : "profile"
+      } &#36</p><a href=${`author?authorId=${product.authorId}`
       } class=link-style-inherit >Author: ${
         product.authorName
       } </a><p>Uploaded: ${date}</p> <p>Resolution: ${
@@ -523,7 +521,7 @@ const infiniteScroll = function () {
         const additionalHtml =
           '<button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>';
 
-        loadMore(colc, additionalHtml, "all", true, true, scrollInterval);
+        loadMore(colc, additionalHtml, "all", true, scrollInterval);
       }
     }
   }, 300);
@@ -538,13 +536,13 @@ const loadMoreByButton = function () {
                 <button class="btn-gray articles-container__button ai-c" data-delete-btn="">Delete <img src="img/edit.svg" alt="delete"></button>
               </div>`;
 
-    loadMore(colcUploadedByUser, additionalHtml, btnDataset, false, false);
+    loadMore(colcUploadedByUser, additionalHtml, btnDataset, false);
   }
 
   if (btnDataset === "uploaded-by-author") {
     const additionalHtml = `<button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>`;
 
-    loadMore(colcUploadedByAuthor, additionalHtml, btnDataset, true, false);
+    loadMore(colcUploadedByAuthor, additionalHtml, btnDataset, true);
   }
 };
 

@@ -173,7 +173,7 @@ const getAllProductsUploadedByUser = async (
   req,
   res,
   next,
-  startIndex = 0,
+  startIndex,
   productsIds
 ) => {
   try {
@@ -352,7 +352,9 @@ const loadMorePost = async (req, res, next) => {
     if (callbackOption === "uploaded-by-author") {
       const authorId = req.body.authorId;
 
-      const allAuthorProducts = await User.findById(authorId).uploadedProducts;
+      const author = await User.findById(authorId);
+
+      const allAuthorProducts = author.uploadedProducts;
 
       const products = await getAllProductsUploadedByUser(
         req,
