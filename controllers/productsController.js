@@ -13,7 +13,7 @@ const belongsToUser = (user, productId) => {
   return false;
 };
 
-// This utility optimizes img gets it's resolution and changes format of a original url
+// This utility optimizes img gets it's resolution and changes format of a original url and adds watermark
 const imgUtility = async (imgUrlOrginal, imgName) => {
   const imgUrl = imgUrlOrginal
     .replaceAll(String.fromCharCode(92), "/")
@@ -93,6 +93,22 @@ const imgUtility = async (imgUrlOrginal, imgName) => {
     } catch (err) {}
     throw new Error("Error in imgUtility function", err);
   }
+};
+
+const deleteUnnecessaryImages = (product) => {
+  if (!product.isPurchased) {
+    try {
+      fs.unlinkSync(`uploads/${product.imgUrl}`);
+      fs.unlinkSync(`uploads/${product.optimizedImgUrl}`);
+      fs.unlinkSync(`uploads/${product.imgUrlWatermarked}`);
+      fs.unlinkSync(`uploads/${product.optimizedImgUrlWatermarked}`);
+    } catch (err) {}
+  }
+
+  try {
+    fs.unlinkSync(`uploads/${product.imgUrlWatermarked}`);
+    fs.unlinkSync(`uploads/${product.optimizedImgUrlWatermarked}`);
+  } catch (err) {}
 };
 
 ///////////////////////////
@@ -261,6 +277,8 @@ const editPost = async (req, res) => {
       imgUrlWatermarked = newImgUrlWatermarked;
       optimizedImgUrlWatermarked = newOptimizedImgUrlWatermarked;
       resolution = newResolution;
+
+      deleteUnnecessaryImages(product);
     }
 
     await Product.updateOne(
@@ -297,14 +315,7 @@ const deletePost = async (req, res) => {
 
     const product = await Product.findOne({ _id: productId });
 
-    if (!product.isPurchased) {
-      try {
-        fs.unlinkSync(`uploads/${product.imgUrl}`);
-        fs.unlinkSync(`uploads/${product.optimizedImgUrl}`);
-        fs.unlinkSync(`uploads/${product.imgUrlWatermarked}`);
-        fs.unlinkSync(`uploads/${product.optimizedImgUrlWatermarked}`);
-      } catch (err) {}
-    }
+    deleteUnnecessaryImages(product);
 
     product.delete();
 
