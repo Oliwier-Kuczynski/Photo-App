@@ -45,7 +45,7 @@ const imgUtility = async (imgUrlOrginal, imgName) => {
         .clone()
         .composite([
           {
-            input: "public/Copyright.png",
+            input: "public/img/Copyright.png",
             gravity: "centre",
             tile: true,
           },
@@ -60,7 +60,7 @@ const imgUtility = async (imgUrlOrginal, imgName) => {
         .resize({ width: 600 })
         .composite([
           {
-            input: "public/Copyright.png",
+            input: "public/img/Copyright.png",
             gravity: "centre",
             tile: true,
           },
