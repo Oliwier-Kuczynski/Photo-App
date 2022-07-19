@@ -1,36 +1,41 @@
 const productsController = require("../controllers/productsController");
+const shoppingCartController = require("../controllers/shoppingCartController");
 const userConnection = require("../models/user");
 const User = userConnection.models.User;
 
 const renderPage = (req, res, page, data) => {
-  const searchQuery = req.query.searchquery || "";
-  const filter = req.query.filter || "";
+  try {
+    const searchQuery = req.query.searchquery || "";
+    const filter = req.query.filter || "";
 
-  if (req.originalUrl === "/reset-password") {
-    if (req.isAuthenticated()) return res.redirect("/");
+    if (req.originalUrl === "/reset-password") {
+      if (req.isAuthenticated()) return res.redirect("/");
 
-    return res.render(page, {
+      return res.render(page, {
+        authenticated: false,
+        searchQuery,
+        filter,
+      });
+    }
+
+    if (req.isAuthenticated()) {
+      return res.render(page, {
+        authenticated: true,
+        searchQuery,
+        filter,
+        ...data,
+      });
+    }
+
+    res.render(page, {
       authenticated: false,
-      searchQuery,
-      filter,
-    });
-  }
-
-  if (req.isAuthenticated()) {
-    return res.render(page, {
-      authenticated: true,
       searchQuery,
       filter,
       ...data,
     });
+  } catch (err) {
+    throw new Error("Error in renderPage");
   }
-
-  res.render(page, {
-    authenticated: false,
-    searchQuery,
-    filter,
-    ...data,
-  });
 };
 
 const homePageGet = async (req, res) => {
@@ -38,7 +43,7 @@ const homePageGet = async (req, res) => {
   const filter = req.query.filter || "";
 
   try {
-    let products = await productsController.getProducts(searchQuery, filter);
+    const products = await productsController.getProducts(searchQuery, filter);
 
     renderPage(req, res, "index.ejs", { products });
   } catch (err) {
@@ -122,6 +127,34 @@ const editGet = async (req, res) => {
   }
 };
 
+const shopingCartGet = async (req, res, next) => {
+  try {
+    if (req.isAuthenticated()) {
+      const products = await shoppingCartController.getShopingCartItemsPost(
+        req,
+        res,
+        next,
+        []
+      );
+
+      return renderPage(req, res, "shoping-cart.ejs", { products });
+    }
+
+    const ids = JSON.parse(req.cookies["cart-items-ids"]);
+
+    const products = await shoppingCartController.getShopingCartItemsPost(
+      req,
+      res,
+      next,
+      ids
+    );
+
+    renderPage(req, res, "shoping-cart.ejs", { products });
+  } catch (err) {
+    res.status(500);
+  }
+};
+
 module.exports = {
   homePageGet,
   aboutGet,
@@ -133,4 +166,5 @@ module.exports = {
   changePasswordGet,
   editGet,
   resetPasswordGet,
+  shopingCartGet,
 };

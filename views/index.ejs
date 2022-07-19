@@ -22,7 +22,7 @@
           <% products.forEach(product => { %>
             <% const date = product.createdAt.toISOString().split('T')[0].replaceAll('-', '/'); %> 
 
-            <article class="ver-spacer grid-item" id="<% product._id %>" data-full-text='<%= product.description %>' >
+            <article class="ver-spacer grid-item" id="<%= product._id %>" data-full-text='<%= product.description %>' >
               <img src="<%= product.optimizedImgUrlWatermarked %>" data-original-img-source="<%= product.imgUrlWatermarked %> " alt="article photo" class="articles-container__article-img">
               <h2><%= product.title %></h2>
 
@@ -35,7 +35,7 @@
               <% } %>
 
               <div class="articles-container__article-info separetor"><p>Price: <%= product.price  %> &#36</p><a href="author?authorId=<%= product.authorId %>" class="link-style-inherit">Author: <%= product.authorName %> </a><p>Uploaded: <%= date %></p> <p>Resolution: <%= product.resolution %></p></div>
-              <button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
+              <button class="btn-gray articles-container__button ai-c" data-add-to-cart-btn="">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>
           </article>
           <% }); %>
         </div>
@@ -55,7 +55,7 @@
           </div>
         </div>
 
-        <a href="#" class="btn-dark checkout-btn ai-c"><span>Checkout</span> <span class="checkout-btn__left-column ai-c"><span>3<span class="green-accent">x</span></span> <span>Total: <span class="green-accent">45$</span></span></span></a>
+        <a href="shoping-cart" class="btn-dark checkout-btn ai-c" data-cart-btn=""><span>Checkout</span> <span class="checkout-btn__left-column ai-c"><span><span data-cart-btn-quantity="">0</span><span class="green-accent">x</span></span> <span>Total: <span class="green-accent"><span data-cart-btn-amount="">0</span>$</span></span></span></a>
     </div>
   </body>
 </html>

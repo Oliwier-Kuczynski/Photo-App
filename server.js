@@ -2,9 +2,11 @@ const express = require("express");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const passport = require("passport");
+var cookieParser = require("cookie-parser");
 const logRegRoutes = require("./routes/log-reg-router");
 const pagesRoutes = require("./routes/pages-router");
 const productsRoutes = require("./routes/products-router");
+const shoppingCartRoutes = require("./routes/shopping-cart-router");
 require("./authentication/passport");
 require("dotenv").config();
 require("ejs");
@@ -43,9 +45,12 @@ app.use(passport.session());
 //   next();
 // });
 
+app.use(cookieParser());
+
 app.use(logRegRoutes);
 app.use(pagesRoutes);
 app.use(productsRoutes);
+app.use(shoppingCartRoutes);
 
 app.listen(port, (err) => {
   if (err) console.error("App is not listening");

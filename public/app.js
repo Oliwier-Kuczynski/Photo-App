@@ -3,7 +3,7 @@
 import * as imagesloaded from "./node_modules/imagesloaded/imagesloaded.pkgd.min.js";
 import * as colcade from "./node_modules/colcade/colcade.js";
 
-// Layout related
+// DOM related
 const showMessage = (status, message, redirectUrl) => {
   if (document.querySelector("[data-popup]")) {
     document.querySelector("[data-popup]").remove();
@@ -28,10 +28,12 @@ const showMessage = (status, message, redirectUrl) => {
 
   const popup = document.querySelector("[data-popup]");
 
-  setTimeout(() => {
+  popup.addEventListener("animationend", () => {
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
     popup.remove();
-    if (redirectUrl) window.location.href = redirectUrl;
-  }, 4000);
+  });
 };
 
 const showConfirmation = function (callback) {
@@ -122,7 +124,7 @@ const showFullText = function (e) {
     "[data-full-text-close-btn]"
   );
 
-  showFullTextContainerCloseBtn.addEventListener("click", (e) => {
+  showFullTextContainerCloseBtn.addEventListener("click", () => {
     showFullTextContainer.classList.remove("show");
   });
 };
@@ -148,11 +150,112 @@ const showLoadMoreBtns = function () {
     showLoadMoreBtnsUtility("uploaded-by-author");
 };
 
-let allowRequest = true;
+const slideToDelete = function (e, isMobile) {
+  const targetElement = e.target.closest("[data-drag-element]");
+  if (!targetElement) return;
+
+  targetElement.style.setProperty(
+    "--height",
+    getComputedStyle(targetElement).height
+  );
+
+  let isDown = true;
+
+  let moving = false;
+
+  const startX = isMobile
+    ? e.touches[0].clientX - targetElement.getBoundingClientRect().left
+    : e.clientX - targetElement.getBoundingClientRect().left;
+
+  let currentX;
+
+  let scrollX;
+
+  // Scrolling
+  const scroll = (e) => {
+    moving = true;
+    currentX = isMobile
+      ? e.touches[0].clientX - targetElement.getBoundingClientRect().left
+      : e.clientX - targetElement.getBoundingClientRect().left;
+  };
+
+  !isMobile && targetElement.addEventListener("mousemove", scroll);
+  isMobile && targetElement.addEventListener("touchmove", scroll);
+
+  const targetElementWidth = targetElement.getBoundingClientRect().width;
+
+  setInterval(() => {
+    if (!isDown) return;
+    if (!moving) return;
+
+    moving = false;
+
+    scrollX = (currentX - startX) * 1.75;
+
+    // Prevent from scrolling in other direction
+    if (scrollX > 0) {
+      targetElement.children[0].style.setProperty("--x", "0px");
+      return;
+    }
+
+    // Prevents from further scrolling
+    if (Math.abs(scrollX) >= targetElementWidth) {
+      targetElement.children[0].style.setProperty(
+        "--x",
+        `-${targetElementWidth}px`
+      );
+      return;
+    }
+
+    // Responsible for reveling the element by making clip path bigger
+    let clipPathGrowingSpeed = 0;
+
+    if (Math.abs(scrollX) > 100) clipPathGrowingSpeed = Math.abs(scrollX) - 100;
+
+    targetElement
+      .querySelector("[data-secondary-content]")
+      .style.setProperty("--size", `${clipPathGrowingSpeed * 2}px`);
+
+    targetElement.children[0].style.setProperty("--x", `${scrollX}px`);
+  }, 20);
+
+  const endScrolling = () => {
+    isDown = false;
+
+    if (Math.abs(scrollX) >= targetElementWidth / 2 && scrollX < 0) {
+      targetElement.classList.add("remove");
+
+      targetElement.addEventListener("transitionend", () => {
+        targetElement.remove();
+      });
+
+      removeFromCart(targetElement);
+      return;
+    }
+    targetElement.children[0].style.setProperty("--x", "0px");
+  };
+
+  !isMobile && document.addEventListener("mouseup", endScrolling);
+  isMobile && document.addEventListener("touchend", endScrolling);
+};
 
 // Sending requsets to the backend
-const fetchData = async function (url, method, headers, body, isMessage) {
-  if (!allowRequest && url !== "/delete") return;
+let allowRequest = true;
+
+const fetchData = async function (
+  url,
+  method,
+  headers,
+  body,
+  isMessage = false,
+  requestLimit = true
+) {
+  // Returns true if the request isn't allowed and request limit is enabled
+  if (!allowRequest && requestLimit) return;
+
+  let invokeInTime = 4000;
+
+  if (!requestLimit) invokeInTime = 0;
 
   allowRequest = false;
 
@@ -164,13 +267,13 @@ const fetchData = async function (url, method, headers, body, isMessage) {
 
   const data = await response.json();
 
+  setTimeout(() => {
+    allowRequest = true;
+  }, invokeInTime);
+
   if (!isMessage) return data;
 
   const { status, message, redirectUrl } = data;
-
-  setTimeout(() => {
-    allowRequest = true;
-  }, 4000);
 
   showMessage(status, message, redirectUrl);
 
@@ -179,7 +282,7 @@ const fetchData = async function (url, method, headers, body, isMessage) {
 
 const registerForm = document.querySelector("[data-register-form]");
 
-const register = async function (e) {
+const register = function (e) {
   e.preventDefault();
   const name = registerForm.querySelector("#name").value;
   const username = registerForm
@@ -205,7 +308,7 @@ const register = async function (e) {
 
 const loginForm = document.querySelector("[data-login-form]");
 
-const login = async function (e) {
+const login = function (e) {
   e.preventDefault();
   const username = loginForm.querySelector("#email").value.toLowerCase().trim();
   const password = loginForm.querySelector("#password").value;
@@ -222,7 +325,7 @@ const login = async function (e) {
   );
 };
 
-const formDataUploadEdit = async function (fetchUrl, invokingElement) {
+const formDataUploadEdit = function (fetchUrl, invokingElement) {
   const id = invokingElement.id;
   const title = invokingElement.querySelector("#title").value;
   const description = invokingElement.querySelector("#description").value;
@@ -256,7 +359,7 @@ const editPost = function (e) {
   formDataUploadEdit("/edit", editForm);
 };
 
-const deletePost = async function (e) {
+const deletePost = function (e) {
   const id = e.target.closest(".grid-item").id;
 
   fetchData(
@@ -266,11 +369,12 @@ const deletePost = async function (e) {
     JSON.stringify({
       id,
     }),
-    true
+    true,
+    false
   );
 };
 
-const logout = async function (e) {
+const logout = function (e) {
   e.preventDefault();
 
   fetchData(
@@ -282,7 +386,7 @@ const logout = async function (e) {
   );
 };
 
-const deleteAccount = async () => {
+const deleteAccount = function () {
   fetchData(
     "/close-account",
     "POST",
@@ -292,7 +396,7 @@ const deleteAccount = async () => {
   );
 };
 
-const changePassword = async function (e) {
+const changePassword = function (e) {
   e.preventDefault();
   const oldPassword = document.querySelector("#old-password").value;
   const newPassword = document.querySelector("#new-password").value;
@@ -312,7 +416,7 @@ const changePassword = async function (e) {
   );
 };
 
-const resetPassword = async function (e) {
+const resetPassword = function (e) {
   e.preventDefault();
 
   const username = document.querySelector("#email").value.toLowerCase().trim();
@@ -519,7 +623,7 @@ const infiniteScroll = function () {
 
       if (windowHeightPlusYOffset >= documentHeigth) {
         const additionalHtml =
-          '<button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>';
+          '<button class="btn-gray articles-container__button ai-c" data-add-to-cart-btn="">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>';
 
         loadMore(colc, additionalHtml, "all", true, scrollInterval);
       }
@@ -540,10 +644,133 @@ const loadMoreByButton = function () {
   }
 
   if (btnDataset === "uploaded-by-author") {
-    const additionalHtml = `<button class="btn-gray articles-container__button ai-c">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>`;
+    const additionalHtml = `<button class="btn-gray articles-container__button ai-c" data-add-to-cart-btn="">Add <img src="img/shopping-cart.svg" alt="shopping cart"></button>`;
 
     loadMore(colcUploadedByAuthor, additionalHtml, btnDataset, true);
   }
+};
+
+const setCookie = function (name, value, date) {
+  document.cookie = `${name}=${value};  expires=${date.toUTCString()}`;
+};
+
+const getCookie = function (name) {
+  const cookieValue = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${name}=`))
+    ?.split("=")[1];
+
+  return cookieValue;
+};
+
+let loggedIn;
+let cartItemsIds = [];
+
+try {
+  cartItemsIds = JSON.parse(getCookie("cart-items-ids"));
+} catch {}
+
+const getCartItems = async function () {
+  const { products, isLoggedin, ids } = await fetchData(
+    "/get-cart-items",
+    "POST",
+    {
+      "Content-Type": "application/json",
+    },
+    JSON.stringify({ cartItemsIds }),
+    false,
+    false
+  );
+
+  loggedIn = isLoggedin;
+
+  if (loggedIn) {
+    cartItemsIds = ids;
+  }
+
+  setCookie(
+    "cart-items-ids",
+    JSON.stringify(cartItemsIds),
+    new Date(2050, 1, 1)
+  );
+
+  return products;
+};
+
+const updateCartButton = async function (transition) {
+  const products = await getCartItems();
+
+  const cartBtn = document.querySelector("[data-cart-btn]");
+
+  if (!cartBtn) return;
+
+  cartBtn.querySelector("[data-cart-btn-quantity]").textContent =
+    products.length;
+
+  const sumAmount = products.reduce((x, y) => x + y.price, 0);
+
+  cartBtn.querySelector("[data-cart-btn-amount]").textContent = sumAmount;
+
+  if (!transition) return;
+
+  cartBtn.classList.add("jump");
+
+  cartBtn.addEventListener("transitionend", () =>
+    cartBtn.classList.remove("jump")
+  );
+};
+
+updateCartButton(false);
+
+const addToCart = function (e) {
+  const addToCartButton = e.target.closest("[data-add-to-cart-btn]");
+
+  if (!addToCartButton) return;
+
+  const id = e.target.closest(".grid-item").id;
+
+  if (cartItemsIds.includes(id))
+    return showMessage("ok", "Item already is in the cart");
+
+  cartItemsIds.push(id);
+
+  updateCartButton(true);
+
+  showMessage("ok", "Item added to cart");
+};
+
+const removeFromCart = function (item) {
+  const id = item.id;
+
+  if (loggedIn) {
+    fetchData(
+      "/remove-from-cart",
+      "POST",
+      {
+        "Content-Type": "application/json",
+      },
+      JSON.stringify({ id }),
+      true,
+      false
+    );
+  }
+
+  const shopingCartCookieData = getCookie("cart-items-ids");
+
+  if (!shopingCartCookieData) return;
+
+  const shoppingCartItems = JSON.parse(shopingCartCookieData);
+
+  shoppingCartItems.forEach((itemId) => {
+    if (itemId === id) {
+      shoppingCartItems.splice(shoppingCartItems.indexOf(itemId), 1);
+      setCookie(
+        "cart-items-ids",
+        JSON.stringify(shoppingCartItems),
+        new Date(2050, 1, 1)
+      );
+    }
+  });
 };
 
 // Colcade
@@ -650,6 +877,7 @@ articlesGrids &&
     articlesGrid.addEventListener("click", (e) => {
       zoomImage(e);
       showFullText(e);
+      addToCart(e);
     })
   );
 //
@@ -690,6 +918,17 @@ searchFormSelect.addEventListener("change", searchForQueryAndFilters);
 
 // Reload Colcade
 document.addEventListener("DOMContentLoaded", reloadColcade);
+
+// Shoping Cart
+const shopingCart = document.querySelector("[data-shoping-cart]");
+
+if (shopingCart) {
+  shopingCart.addEventListener("touchstart", (e) => slideToDelete(e, true));
+}
+
+if (shopingCart) {
+  shopingCart.addEventListener("mousedown", (e) => slideToDelete(e, false));
+}
 
 // Invoicing Functions
 document.body.dataset.scroll && infiniteScroll();

@@ -23,4 +23,6 @@ router.get("/change-password", isAuth, pagesController.changePasswordGet);
 
 router.get("/reset-password", pagesController.resetPasswordGet);
 
+router.get("/shoping-cart", pagesController.shopingCartGet);
+
 module.exports = router;

@@ -26,6 +26,9 @@ const UserSchema = new mongoose.Schema(
     purchasedProducts: {
       type: Array,
     },
+    shoppingCart: {
+      type: Array,
+    },
     verificationCode: {
       type: Number,
     },

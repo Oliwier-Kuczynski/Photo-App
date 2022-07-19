@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+  </head>
+  <body>
+    <div class="container">
+      <%- include('partials/navigation')%>
+      <header>
+        <h1 class="text-c">Shoping Cart 🛍️</h1>
+      </header>
+
+      <div class="shoping-cart ver-spacer" data-shoping-cart="">
+        <ul class="ver-spacer">
+          <% products.forEach((product) => { %>
+          <li data-drag-element="" id="<%= product._id %>">
+            <div>
+              <div class="separetor main-content">
+                <img
+                  src="<%= product.optimizedImgUrlWatermarked %>"
+                  alt=""
+                  loading="lazy"
+                  class="thumbnail"
+                />
+                <div class="main-content__text">
+                  <h2><%= product.title %></h2>
+                  <p><%= product.price %> $</p>
+                </div>
+              </div>
+
+              <div class="secondary-content ai-c" data-secondary-content="">
+                <img src="img/delete.svg" alt="" />
+              </div>
+            </div>
+          </li>
+          <% }) %>
+        </ul>
+
+        <div class="drag-animation">
+          <div></div>
+          <p>Drag left to delete</p>
+        </div>
+
+        <a class="btn-accent b-margin-top" type="submit">Checkout</a>
+      </div>
+    </div>
+  </body>
+</html>
