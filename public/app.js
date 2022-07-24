@@ -325,55 +325,6 @@ const login = function (e) {
   );
 };
 
-const formDataUploadEdit = function (fetchUrl, invokingElement) {
-  const id = invokingElement.id;
-  const title = invokingElement.querySelector("#title").value;
-  const description = invokingElement.querySelector("#description").value;
-  const price = invokingElement.querySelector("#price").value;
-  const image = invokingElement.querySelector("#image").files[0];
-
-  const formData = new FormData();
-
-  formData.append("id", id);
-  formData.append("title", title);
-  formData.append("description", description);
-  formData.append("price", price);
-  formData.append("image", image);
-
-  fetchData(fetchUrl, "POST", {}, formData, true);
-};
-
-const uploadForm = document.querySelector("[data-upload-form]");
-
-const uploadPost = function (e) {
-  e.preventDefault();
-
-  formDataUploadEdit("/upload", uploadForm);
-};
-
-const editForm = document.querySelector("[data-edit-form]");
-
-const editPost = function (e) {
-  e.preventDefault();
-
-  formDataUploadEdit("/edit", editForm);
-};
-
-const deletePost = function (e) {
-  const id = e.target.closest(".grid-item").id;
-
-  fetchData(
-    "/delete",
-    "POST",
-    { "Content-Type": "application/json" },
-    JSON.stringify({
-      id,
-    }),
-    true,
-    false
-  );
-};
-
 const logout = function (e) {
   e.preventDefault();
 
@@ -472,6 +423,55 @@ const sendVerificationCode = async function (e) {
       sendVerificationCodeBtn.textContent = "Send";
     }
   }, 1000);
+};
+
+const formDataUploadEdit = function (fetchUrl, invokingElement) {
+  const id = invokingElement.id;
+  const title = invokingElement.querySelector("#title").value;
+  const description = invokingElement.querySelector("#description").value;
+  const price = invokingElement.querySelector("#price").value;
+  const image = invokingElement.querySelector("#image").files[0];
+
+  const formData = new FormData();
+
+  formData.append("id", id);
+  formData.append("title", title);
+  formData.append("description", description);
+  formData.append("price", price);
+  formData.append("image", image);
+
+  fetchData(fetchUrl, "POST", {}, formData, true);
+};
+
+const uploadForm = document.querySelector("[data-upload-form]");
+
+const uploadPost = function (e) {
+  e.preventDefault();
+
+  formDataUploadEdit("/upload", uploadForm);
+};
+
+const editForm = document.querySelector("[data-edit-form]");
+
+const editPost = function (e) {
+  e.preventDefault();
+
+  formDataUploadEdit("/edit", editForm);
+};
+
+const deletePost = function (e) {
+  const id = e.target.closest(".grid-item").id;
+
+  fetchData(
+    "/delete",
+    "POST",
+    { "Content-Type": "application/json" },
+    JSON.stringify({
+      id,
+    }),
+    true,
+    false
+  );
 };
 
 let colc, colcUploadedByUser, colcPurchasedByUser, colcUploadedByAuthor;

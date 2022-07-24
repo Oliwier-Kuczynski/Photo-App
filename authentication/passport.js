@@ -1,3 +1,4 @@
+const { use } = require("passport");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const connection = require("../models/user");
@@ -14,12 +15,12 @@ const verifyCallback = async (username, password, done) => {
 
     const isValid = validatePassword(password, user.hash, user.salt);
 
-    if (isValid) {
-      return done(null, user);
-    }
-
     if (!isValid) {
       return done(null, false);
+    }
+
+    if (isValid) {
+      return done(null, user);
     }
   } catch (err) {
     done(err);
@@ -31,7 +32,7 @@ const strategy = new LocalStrategy(verifyCallback);
 passport.use(strategy);
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user._id);
 });
 
 passport.deserializeUser(async (userId, done) => {
